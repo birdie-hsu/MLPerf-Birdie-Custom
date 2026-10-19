@@ -1,0 +1,101 @@
+{
+  "row": {
+    "target": "local/MOCK-35B",
+    "requested_model": "MOCK-35B",
+    "backend": "llamacpp",
+    "case_id": "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+    "category": "Content Generation",
+    "mode": "llm",
+    "repeat": 0,
+    "phase": "warmup",
+    "synthetic": true,
+    "case_sha256": "71a27f273898acf9a781be932c6afb1228be25e0cb56db502d10254b9962b38b",
+    "origin": "MLPerf Client v2.0 exact prompt",
+    "trace": "traces/f712b35c0b94042e-r0-warmup-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "unscored",
+      "pass": null
+    },
+    "status": "warmup_completed",
+    "e2e_s": 3.2999960239976645e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/MOCK-35B",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 256,
+    "request_output_budget": 2048
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "You are an AI assistant. User will you give you a task. Your goal is to complete the task as faithfully as you can. While performing the task think step-by-step and justify your steps."
+        },
+        {
+          "role": "user",
+          "content": "Two neighboring farms both had depleted soils due to intensive agricultural practices for decades. Apple far decided to start an agroforestry system and other methods to protect their depleted soils, while Pear farm did nothing and had big losses the following years.  Which farm used fewer cover crops?"
+        }
+      ],
+      "reply": {
+        "text": "Synthetic fixture response. This does not measure model quality or speed.",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "Synthetic fixture response. This does not measure model quality or speed."
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/MOCK-35B",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": []
+}

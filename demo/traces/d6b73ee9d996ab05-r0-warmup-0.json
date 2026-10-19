@@ -1,0 +1,97 @@
+{
+  "row": {
+    "target": "sol",
+    "requested_model": "gpt-6.1-sol",
+    "backend": "responses",
+    "case_id": "prompts/data_agent/da-agent-scenario.json",
+    "category": "Data Analyst Agent",
+    "mode": "replay",
+    "repeat": 0,
+    "phase": "warmup",
+    "synthetic": true,
+    "case_sha256": "34efc74508b13797d2167adc10319b3dff35baefd75d4505bad4224a454e27df",
+    "origin": "MLPerf Client v2.0 exact prompts; portable replay",
+    "trace": "traces/d6b73ee9d996ab05-r0-warmup-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "unscored",
+      "pass": null
+    },
+    "status": "warmup_completed",
+    "e2e_s": 3.7699996028095484e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6.1-sol",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 1000,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Warmup. Reply with 100 words max.\n"
+        }
+      ],
+      "reply": {
+        "text": "Synthetic fixture response. This does not measure model quality or speed.",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "Synthetic fixture response. This does not measure model quality or speed."
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": []
+}

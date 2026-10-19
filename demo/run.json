@@ -1,0 +1,841 @@
+{
+  "tool_version": "0.1.0",
+  "created_at_utc": "2026-10-06T01:58:41.478746+00:00",
+  "synthetic": true,
+  "official_mlperf_result": false,
+  "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14",
+    "processor": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD"
+  },
+  "config": {
+    "repeats": 1,
+    "warmups": 1,
+    "order_seed": 20261006,
+    "request_timeout_s": 180,
+    "task_timeout_s": 600,
+    "max_agent_turns": 12,
+    "max_requests": 1000,
+    "replay_tools": false,
+    "docker_image": "python:3.12-slim",
+    "docker_cpus": "1",
+    "docker_memory": "1g",
+    "targets": [
+      {
+        "name": "sol",
+        "backend": "responses",
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-6.1-sol",
+        "api_key_env": "OPENAI_API_KEY",
+        "reasoning_effort": "low",
+        "max_output_tokens": 8192,
+        "price_per_million": null
+      },
+      {
+        "name": "luna",
+        "backend": "responses",
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-6-luna",
+        "api_key_env": "OPENAI_API_KEY",
+        "reasoning_effort": "low",
+        "max_output_tokens": 8192,
+        "price_per_million": null
+      },
+      {
+        "name": "local",
+        "backend": "llamacpp",
+        "base_url": "http://127.0.0.1:8080/v1",
+        "model": "local-model",
+        "discover_models": true,
+        "llama_roots": [],
+        "search_roots": [],
+        "context_size": 32768,
+        "gpu_layers": 99,
+        "threads": 8,
+        "load_timeout_s": 300,
+        "server_args": [],
+        "model_overrides": {},
+        "api_key_env": null,
+        "temperature": 0,
+        "seed": 20261006,
+        "max_output_tokens": 2048,
+        "extra_body": {
+          "cache_prompt": false
+        },
+        "metadata": {
+          "gpu": "FILL_ME",
+          "driver": "FILL_ME"
+        }
+      }
+    ]
+  },
+  "targets": [
+    {
+      "name": "sol",
+      "backend": "responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-6.1-sol",
+      "api_key_env": "OPENAI_API_KEY",
+      "reasoning_effort": "low",
+      "max_output_tokens": 8192,
+      "price_per_million": null
+    },
+    {
+      "name": "luna",
+      "backend": "responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-6-luna",
+      "api_key_env": "OPENAI_API_KEY",
+      "reasoning_effort": "low",
+      "max_output_tokens": 8192,
+      "price_per_million": null
+    },
+    {
+      "name": "local/MOCK-4B",
+      "backend": "llamacpp",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "model": "MOCK-4B",
+      "discover_models": true,
+      "llama_roots": [],
+      "search_roots": [],
+      "context_size": 32768,
+      "gpu_layers": 99,
+      "threads": 8,
+      "load_timeout_s": 300,
+      "server_args": [],
+      "model_overrides": {},
+      "api_key_env": null,
+      "temperature": 0,
+      "seed": 20261006,
+      "max_output_tokens": 2048,
+      "extra_body": {
+        "cache_prompt": false
+      },
+      "metadata": {
+        "gpu": "FILL_ME",
+        "driver": "FILL_ME"
+      }
+    },
+    {
+      "name": "local/MOCK-35B",
+      "backend": "llamacpp",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "model": "MOCK-35B",
+      "discover_models": true,
+      "llama_roots": [],
+      "search_roots": [],
+      "context_size": 32768,
+      "gpu_layers": 99,
+      "threads": 8,
+      "load_timeout_s": 300,
+      "server_args": [],
+      "model_overrides": {},
+      "api_key_env": null,
+      "temperature": 0,
+      "seed": 20261006,
+      "max_output_tokens": 2048,
+      "extra_body": {
+        "cache_prompt": false
+      },
+      "metadata": {
+        "gpu": "FILL_ME",
+        "driver": "FILL_ME"
+      }
+    }
+  ],
+  "upstream": {
+    "repository": "https://github.com/mlcommons/mlperf_client",
+    "tag": "v2.0",
+    "commit": "b0e1d4520142e2cf4ee064a9eeed50a36444b30a",
+    "prompt_model_directory": "llama_3_1_8b_instruct",
+    "license_file": "LICENSE.md",
+    "note": "Exact source files. Portable harness behavior and autonomous cases are ClientBench additions; not official MLPerf results.",
+    "files": {
+      "LICENSE.md": "eb3d7b5485466acbd81f2b496f595ab637d2792e268206b27d99e793bdb67549",
+      "prompts/code_analysis/benchmark_stage_cpp_2k.json": "8b9969cab34c926084fa7e6e78687cd6829a151cfe5816c7509c10a7ecbe4315",
+      "prompts/code_analysis/command_parser_cpp_2k.json": "d58181fda89afa774a6a937a240e789da5f2705259e75f4028bf936abc718cc7",
+      "prompts/code_analysis/performance_counter_group_cpp_2k.json": "006d3555743d05dfaacda31bc211b979ebc268c81377f20f1dff95fb56504d5c",
+      "prompts/content_generation/greedy-prompt_cot.39329.json": "00a5ebfcc9da25ede5ff20fe3d9e8fe2d2226bfc6043d6ef3386a17a193f9b94",
+      "prompts/content_generation/greedy-prompt_niv.415874.json": "88f6aa5dd9cc8f914ed418e58d2a43bf8c7e5a14023343c869556816ed22c350",
+      "prompts/content_generation/greedy-prompt_t0.677207.json": "1fd5db41f97ba8eb12861aba4cf404d0c13cff6ebb3a6642ee5ed2d3dc0a4401",
+      "prompts/creative_writing/greedy-prompt_flan.63349.json": "32624b6351f383d3c8088b9814dac14441bbee125256e3a1e78dc78c194acd84",
+      "prompts/creative_writing/greedy-prompt_niv.123362.json": "0ef936ab9a548a324c71611ef404e8f60bafe4b6e2fae643fcef0d834e0290b5",
+      "prompts/creative_writing/greedy-prompt_niv.77134.json": "6679d7a82dfd982f275409d6d161254a45e0eb065625814aae7dd1f70cd91aeb",
+      "prompts/data_agent/da-agent-scenario.json": "d943e16c969eba3c888ca8903c9b74bc775faf95e0b658d01d508d3170704f45",
+      "prompts/data_agent/da_agent_0.md": "e50c3411bf51a9b1bb7d624c271499738e9309b1d4b2fc298c72844aba5b0615",
+      "prompts/data_agent/da_agent_1.md": "26e9829acc4b79ea857f0398fc108cbb66b968aef83ddf8622e531b826d9b98e",
+      "prompts/data_agent/da_agent_2.md": "f51fe56ac59fb0fec433e8d9c2a91edbbfc898dfaf190271cb7833269e1c02d1",
+      "prompts/data_agent/da_agent_3.md": "ad15c9d1cd53adac87a8f84861b64355c0137d063116a4ff559749e553d50eef",
+      "prompts/data_agent/da_system.md": "e4a09f1f151e375730473f113dc1e7709f7c442cc3f75cce6a52e0d77756ca09",
+      "prompts/data_agent/da_user_0.md": "7a8e2b4f699c6628c0464585492ac3b548d61334914266d2157f228512b03f1b",
+      "prompts/data_agent/da_user_1.md": "938e070be7c798d8b1de2af1ecaf05b039ce329a7fcc7a1937836c424dc4fa4f",
+      "prompts/data_agent/da_user_2.md": "b426b0f4a355b49f7c951859ec572b2493f59ae6fbc873dba6bfd59c59b76ec6",
+      "prompts/data_agent/da_user_3.md": "4c93844ae16986a30b085e596b7666b8f5f8d3d55edb8bc96e52f32af885b2d7",
+      "prompts/data_agent/da_warmup.md": "b48e824fcd662e8160b6e43ef8eb50a1fa802e86fc5de36176d84e12dcac7f42",
+      "prompts/intermediate4k/booksum_4k.json": "7c0d0e4dc681c1db39a89cfe040f56b8088e5d575050444b88101cfd0cdd4190",
+      "prompts/intermediate4k/downloader_cpp_4k.json": "4a2bee2f9b312ac987e31a623c3530798a7971b68e69df4486f2ac7bc53258bf",
+      "prompts/structured_text/data_csv2json.json": "2c3fd459f2361ddbbf997687e2c60dae0b477a297e416f293080eefc0c056cc1",
+      "prompts/structured_text/events_ics2xml.json": "023ef6bab3c848a0eb457b94093009512000e7a4f524c5d89a86a916b4860d0c",
+      "prompts/substantial8k/booksum_8k.json": "5adca4134e5b89256f8ed93ccca69ec54b001d265aaad7b56c5ae0755323aa14",
+      "prompts/substantial8k/gov_report_train_infrastructure.json": "1eff4dedbc8b22e6f5045ddb87649791dca489acda89b23029a86e5c093e72cc",
+      "prompts/swe_agent/swe-agent-prompts.json": "3e9994d6dfb0883742cd5cd58bd044146b8e1b0c3d52a5cb1911a9cbac607618",
+      "prompts/swe_agent/swe_agent_0.md": "4d6290bfaf74f5bf83b93642fa6015c86218b40d449e0ef4a11e2a4c6475912f",
+      "prompts/swe_agent/swe_agent_1.md": "62583cc2a427a7acf505570effc4475950800c8682cc51149a677a8d3ab9c251",
+      "prompts/swe_agent/swe_agent_2.md": "f37f60b8bd464659156613b26c79d39a363d04cdce1e0e831fdf4db5dc822798",
+      "prompts/swe_agent/swe_system.md": "f90114341b1a4fc599a2a51c5672df1f05b27e17d316b758955ffb3086a00441",
+      "prompts/swe_agent/swe_user_0.md": "768bb52560a7c797e49b41214baf041d64625bdab62e48c2b6dde529eaf93e13",
+      "prompts/swe_agent/swe_user_1.md": "6818f4b141ae9b99a3935c6bd842dca3a45cb0eb83de4ccab9ccd71550693e8b",
+      "prompts/swe_agent/swe_user_2.md": "46020cebb6a98c7e15c229bc806c5e713902ef22d20c15f6f93958a1e078ca1b",
+      "prompts/swe_agent/swe_warmup.md": "b48e824fcd662e8160b6e43ef8eb50a1fa802e86fc5de36176d84e12dcac7f42",
+      "prompts/template.json": "e790e40dcd8377895741f2648579f2ec11ed250ad764833b15e4571358f8c1e2",
+      "tools_sandbox/01_profile_csv.py": "4810f58ba413fa4915d37fef74d2f2326f07e8cd6ca1fe1d0552bfa55817970d",
+      "tools_sandbox/02_channel_mix.py": "bc32c4ba25b72926726e8ead81f83f282b237cba4d0bb6efb59ca683e2a355c5",
+      "tools_sandbox/03_supplier_concentration.py": "27e3e71f5a08b3a9cff30cf519c450bc073991a6bf418bff2517dd3eaeab6bf4",
+      "tools_sandbox/04_anomalies.py": "84d7b384f193c835db2eb2d1e7296d388fb3321b568b55917ea89b9d2f6ad623",
+      "tools_sandbox/05_trend_by_month.py": "eb8a51f2df730ec682408e91ff6c6b417d21eae90b8188acf13d61c9cbfaae4a",
+      "tools_sandbox/beverage_lib.py": "52c9706fbca087d7ddbbbcedb27205d40ea88853ee13670c1a3b9d819772153c",
+      "tools_sandbox/bootstrap_mean_ci.py": "a4a39ad8d7fb24ac10436facacc91321f7c29dc95de0f149edad2a4376f91b62",
+      "tools_sandbox/bootstrap_test.py": "2352b3f95b66b0f04f3627d6c746e244430426ba9c3522b4f1d96d83a8ad3f1b",
+      "tools_sandbox/Warehouse_and_Retail_Sales.csv": "a8d7fadb9a1b2a494ff7c88dd8739b1e8858ca137166d0c5fb62678704e96a4e"
+    }
+  },
+  "cases": [
+    {
+      "id": "prompts/code_analysis/benchmark_stage_cpp_2k.json#0",
+      "sha256": "26401b07e4503ec45b7d3efa4cbfb54aa640d40fa486aec4e7f961957e7a7991",
+      "category": "Code Analysis",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/code_analysis/command_parser_cpp_2k.json#0",
+      "sha256": "c5bda6a391e6172cfa2f8e9867cd11a035d51f45239a5c4be34f7b28aac8a44d",
+      "category": "Code Analysis",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/code_analysis/performance_counter_group_cpp_2k.json#0",
+      "sha256": "99e0cbf0a1ed0824a31418453542928161def1bea3cc18f31381bd3df5af9c2a",
+      "category": "Code Analysis",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/content_generation/greedy-prompt_cot.39329.json#0",
+      "sha256": "554943c98eb1fca1f336a27000984d1c1dfd2e29d1fbdd10266b80266d394715",
+      "category": "Content Generation",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+      "sha256": "049a68c2aa51f96621358fa68e851a8473606f0a12f47b3fa5df4bba43a94233",
+      "category": "Content Generation",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+      "sha256": "71a27f273898acf9a781be932c6afb1228be25e0cb56db502d10254b9962b38b",
+      "category": "Content Generation",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/creative_writing/greedy-prompt_flan.63349.json#0",
+      "sha256": "02d793514bd15d863606569c913605b7983a1dc80bedbf06624ff778309910d8",
+      "category": "Creative Writing",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/creative_writing/greedy-prompt_niv.123362.json#0",
+      "sha256": "f1e863c016d2ffbfee33a837d3fd41b6ca0c0b83f231ad83043241d33ada8140",
+      "category": "Creative Writing",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/creative_writing/greedy-prompt_niv.77134.json#0",
+      "sha256": "9ab64d887964a3e6099ab67b22100dd1c333cb16c85bb07fef1f9a7ddbb9d9d4",
+      "category": "Creative Writing",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/data_agent/da-agent-scenario.json",
+      "sha256": "34efc74508b13797d2167adc10319b3dff35baefd75d4505bad4224a454e27df",
+      "category": "Data Analyst Agent",
+      "mode": "replay",
+      "origin": "MLPerf Client v2.0 exact prompts; portable replay"
+    },
+    {
+      "id": "prompts/intermediate4k/booksum_4k.json#0",
+      "sha256": "d53abffa7762864986a7b141dbd94ea58769ccf1eefa9920bd5230bd66997556",
+      "category": "Summarization, Intermediate",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/intermediate4k/downloader_cpp_4k.json#0",
+      "sha256": "a90e3b121faab604f27327deedd11590ce7509aee4e57ae04545de2777faaec6",
+      "category": "Summarization, Intermediate",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/structured_text/data_csv2json.json#0",
+      "sha256": "e632cb4b9a65a666abaa2a3e4f6a39cfe932d75ba041b8596a79d7ba799f3d00",
+      "category": "Structured Text",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/structured_text/events_ics2xml.json#0",
+      "sha256": "a598e60b62ee2402ae0834627222b3abab91ef515b8883a107da62092a99ff98",
+      "category": "Structured Text",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/substantial8k/booksum_8k.json#0",
+      "sha256": "e85e5677c86ca65fae593e447d97f27cbe85999029b4078d5f4d45a76ed9bfbe",
+      "category": "Summarization, Substantial",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/substantial8k/gov_report_train_infrastructure.json#0",
+      "sha256": "7a0fe6ae1b6b418ea38f197c73b4d2a521d2196d08a670879d54918b05865c7d",
+      "category": "Summarization, Substantial",
+      "mode": "llm",
+      "origin": "MLPerf Client v2.0 exact prompt"
+    },
+    {
+      "id": "prompts/swe_agent/swe-agent-prompts.json",
+      "sha256": "f8e531597b4b106442e8aa1a8e6be7f809fb2b131131dcac4c50c59f4c70e102",
+      "category": "SWE Agent",
+      "mode": "replay",
+      "origin": "MLPerf Client v2.0 exact prompts; portable replay"
+    },
+    {
+      "id": "autonomous/swe/11",
+      "sha256": "96287911a895a2a4edbbf356a7d8d686d7cff6040b48c0c885c2eacca697a88e",
+      "category": "SWE Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    },
+    {
+      "id": "autonomous/data/11",
+      "sha256": "814d5d17c5a63243963b3f63184aeee34d07735a4b37a26c94f694b24a1ea642",
+      "category": "Data Analyst Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    },
+    {
+      "id": "autonomous/swe/23",
+      "sha256": "e2c6cf3b060872f872a95df35f637a6f98425abcb929e5f03c3fb40c46641f73",
+      "category": "SWE Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    },
+    {
+      "id": "autonomous/data/23",
+      "sha256": "7be7e9e43855cf66892015b3fb816bf69ddd5f019bca9a48a7b9d8f9c1088532",
+      "category": "Data Analyst Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    },
+    {
+      "id": "autonomous/swe/37",
+      "sha256": "68445f44340016bf0379e47661fb683919b18de050a3e383659ada739f5f9fd6",
+      "category": "SWE Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    },
+    {
+      "id": "autonomous/data/37",
+      "sha256": "94f1a24c619978199ac2a8208fd11ed247c40bfeaac6f9a4fc6666d08a2f4fe9",
+      "category": "Data Analyst Agent",
+      "mode": "autonomous",
+      "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"
+    }
+  ],
+  "cache_policy": "Local cache_prompt false by default; cloud cache observed through usage, not disabled.",
+  "execution_order": [
+    [
+      "local/MOCK-4B",
+      "prompts/creative_writing/greedy-prompt_niv.77134.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/structured_text/data_csv2json.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/data/37",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/structured_text/events_ics2xml.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/intermediate4k/booksum_4k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/code_analysis/performance_counter_group_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/data/23",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/data/11",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/intermediate4k/downloader_cpp_4k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/substantial8k/booksum_8k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/content_generation/greedy-prompt_cot.39329.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/code_analysis/benchmark_stage_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/substantial8k/gov_report_train_infrastructure.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/code_analysis/command_parser_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/swe/23",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/swe/37",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/creative_writing/greedy-prompt_niv.123362.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "autonomous/swe/11",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/creative_writing/greedy-prompt_flan.63349.json#0",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/swe_agent/swe-agent-prompts.json",
+      0
+    ],
+    [
+      "local/MOCK-4B",
+      "prompts/data_agent/da-agent-scenario.json",
+      0
+    ],
+    [
+      "luna",
+      "prompts/intermediate4k/booksum_4k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/substantial8k/gov_report_train_infrastructure.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/swe_agent/swe-agent-prompts.json",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/swe/23",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/data/11",
+      0
+    ],
+    [
+      "luna",
+      "prompts/creative_writing/greedy-prompt_niv.77134.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/data_agent/da-agent-scenario.json",
+      0
+    ],
+    [
+      "luna",
+      "prompts/creative_writing/greedy-prompt_niv.123362.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/structured_text/events_ics2xml.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/structured_text/data_csv2json.json#0",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/data/23",
+      0
+    ],
+    [
+      "luna",
+      "prompts/code_analysis/performance_counter_group_cpp_2k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/swe/11",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/swe/37",
+      0
+    ],
+    [
+      "luna",
+      "prompts/intermediate4k/downloader_cpp_4k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/content_generation/greedy-prompt_cot.39329.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/code_analysis/benchmark_stage_cpp_2k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/code_analysis/command_parser_cpp_2k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/substantial8k/booksum_8k.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+      0
+    ],
+    [
+      "luna",
+      "autonomous/data/37",
+      0
+    ],
+    [
+      "luna",
+      "prompts/creative_writing/greedy-prompt_flan.63349.json#0",
+      0
+    ],
+    [
+      "luna",
+      "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/swe/11",
+      0
+    ],
+    [
+      "sol",
+      "prompts/data_agent/da-agent-scenario.json",
+      0
+    ],
+    [
+      "sol",
+      "prompts/substantial8k/booksum_8k.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/intermediate4k/booksum_4k.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/intermediate4k/downloader_cpp_4k.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/creative_writing/greedy-prompt_niv.77134.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/swe_agent/swe-agent-prompts.json",
+      0
+    ],
+    [
+      "sol",
+      "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/swe/23",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/data/37",
+      0
+    ],
+    [
+      "sol",
+      "prompts/code_analysis/performance_counter_group_cpp_2k.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/structured_text/data_csv2json.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/substantial8k/gov_report_train_infrastructure.json#0",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/swe/37",
+      0
+    ],
+    [
+      "sol",
+      "prompts/structured_text/events_ics2xml.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/code_analysis/command_parser_cpp_2k.json#0",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/data/11",
+      0
+    ],
+    [
+      "sol",
+      "prompts/content_generation/greedy-prompt_cot.39329.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/creative_writing/greedy-prompt_flan.63349.json#0",
+      0
+    ],
+    [
+      "sol",
+      "prompts/creative_writing/greedy-prompt_niv.123362.json#0",
+      0
+    ],
+    [
+      "sol",
+      "autonomous/data/23",
+      0
+    ],
+    [
+      "sol",
+      "prompts/code_analysis/benchmark_stage_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/swe/37",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/creative_writing/greedy-prompt_flan.63349.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/intermediate4k/downloader_cpp_4k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/structured_text/data_csv2json.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/swe/23",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/intermediate4k/booksum_4k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/code_analysis/performance_counter_group_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/data_agent/da-agent-scenario.json",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/content_generation/greedy-prompt_cot.39329.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/structured_text/events_ics2xml.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/substantial8k/booksum_8k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/creative_writing/greedy-prompt_niv.77134.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/code_analysis/benchmark_stage_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/creative_writing/greedy-prompt_niv.123362.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/swe_agent/swe-agent-prompts.json",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/data/23",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/code_analysis/command_parser_cpp_2k.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/swe/11",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/data/37",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "autonomous/data/11",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/content_generation/greedy-prompt_t0.677207.json#0",
+      0
+    ],
+    [
+      "local/MOCK-35B",
+      "prompts/substantial8k/gov_report_train_infrastructure.json#0",
+      0
+    ]
+  ],
+  "harness_sha256": {
+    "__init__.py": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed",
+    "cli.py": "a04f70c15c7e4c56b1203287dbd889d4899894b5f355aea0de3b0e61786ea52f",
+    "local.py": "5dd415c76409e9d408615f9e6673448e9e79f45ad389f289ef9940115ac9c29a",
+    "mock.py": "4e2bf8d7d3c126894070ec09abce83c66a3ee9a6a6bbaea967b1ae9063399b2b",
+    "report.py": "7527a892af74a03b647a87748798fbe8bd4b09b0f19819d5f2e439e3b67f1f63",
+    "runner.py": "0122ea3f9685294c8a7fc857215fe6a724bdb7bb62d85570f1ce39882e18a654",
+    "tools.py": "b146308d8082b8e2be55e716b725f49e54050fceff6ecb359b4f3e33bc5148e0",
+    "transport.py": "e46092acd5e26737e49311be870842bfcf4ad08fd421ebfb63b3e7c6292a960e",
+    "workloads.py": "f29ba9f4c1bcf6e979fd3f78326a9fe0baf92c6583e74603d0bd2b1686b04621"
+  },
+  "request_count": 276,
+  "completed_rows": 184
+}

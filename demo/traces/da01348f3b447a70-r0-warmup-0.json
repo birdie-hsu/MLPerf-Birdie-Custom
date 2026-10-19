@@ -1,0 +1,110 @@
+{
+  "row": {
+    "target": "local/MOCK-4B",
+    "requested_model": "MOCK-4B",
+    "backend": "llamacpp",
+    "case_id": "autonomous/data/23",
+    "category": "Data Analyst Agent",
+    "mode": "autonomous",
+    "repeat": 0,
+    "phase": "warmup",
+    "synthetic": true,
+    "case_sha256": "7be7e9e43855cf66892015b3fb816bf69ddd5f019bca9a48a7b9d8f9c1088532",
+    "origin": "ClientBench synthetic task inspired by MLPerf Client scenario",
+    "trace": "traces/da01348f3b447a70-r0-warmup-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "unscored",
+      "pass": null
+    },
+    "docker_image_id": "MOCK/no-container-execution",
+    "status": "warmup_completed",
+    "e2e_s": 4.0700018871575594e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/MOCK-4B",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    ],
+    "output_target_native_tokens": 2048,
+    "request_output_budget": 2048
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Analyze sales.csv. Write and execute analysis.py (stdlib only), and create report.json. Deduplicate exact rows before validation. An invalid row has blank, non-numeric, or negative retail/warehouse. Exclude invalid rows from totals. Required JSON keys: valid_rows, duplicate_rows, invalid_rows, totals_by_supplier (object), monthly_total (object keyed by month strings), top_supplier. Total means retail+warehouse. Use tools to inspect the actual data and run your script before giving a short conclusion."
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"sales.csv\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"sales.csv\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/MOCK-4B",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    }
+  ],
+  "tools": []
+}

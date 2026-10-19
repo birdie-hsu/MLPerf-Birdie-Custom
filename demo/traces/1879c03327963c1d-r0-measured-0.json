@@ -1,0 +1,454 @@
+{
+  "row": {
+    "target": "sol",
+    "requested_model": "gpt-6.1-sol",
+    "backend": "responses",
+    "case_id": "autonomous/data/11",
+    "category": "Data Analyst Agent",
+    "mode": "autonomous",
+    "repeat": 0,
+    "phase": "measured",
+    "synthetic": true,
+    "case_sha256": "814d5d17c5a63243963b3f63184aeee34d07735a4b37a26c94f694b24a1ea642",
+    "origin": "ClientBench synthetic task inspired by MLPerf Client scenario",
+    "trace": "traces/1879c03327963c1d-r0-measured-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "deterministic_data_oracle",
+      "pass": true,
+      "agent_verified": true,
+      "checks": {
+        "valid_rows": true,
+        "duplicate_rows": true,
+        "invalid_rows": true,
+        "totals_by_supplier": true,
+        "monthly_total": true,
+        "top_supplier": true
+      }
+    },
+    "docker_image_id": "MOCK/no-container-execution",
+    "status": "ok",
+    "validation_duration_s": 0.0009602999780327082,
+    "e2e_s": 0.0029830000130459666,
+    "llm_request_s": 0.08,
+    "tool_s": 0.0027592999394983053,
+    "overhead_s": null,
+    "turns": 4,
+    "tool_calls": 3,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6.1-sol",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2400.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 2048,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Analyze sales.csv. Write and execute analysis.py (stdlib only), and create report.json. Deduplicate exact rows before validation. An invalid row has blank, non-numeric, or negative retail/warehouse. Exclude invalid rows from totals. Required JSON keys: valid_rows, duplicate_rows, invalid_rows, totals_by_supplier (object), monthly_total (object keyed by month strings), top_supplier. Total means retail+warehouse. Use tools to inspect the actual data and run your script before giving a short conclusion."
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"sales.csv\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"sales.csv\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Analyze sales.csv. Write and execute analysis.py (stdlib only), and create report.json. Deduplicate exact rows before validation. An invalid row has blank, non-numeric, or negative retail/warehouse. Exclude invalid rows from totals. Required JSON keys: valid_rows, duplicate_rows, invalid_rows, totals_by_supplier (object), monthly_total (object keyed by month strings), top_supplier. Total means retail+warehouse. Use tools to inspect the actual data and run your script before giving a short conclusion."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"sales.csv\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"month,supplier,retail,warehouse\\n1,A,116,144\\n2,B,120,116\\n3,C,131,151\\n4,A,49,48\\n5,B,132,122\\n6,C,48,25\\n1,A,115,78\\n2,B,37,24\\n3,C,138,178\\n4,A,11,153\\n5,B,102,116\\n6,C,41,160\\n1,A,4,136\\n2,B,17,16\\n3,C,10,49\\n4,A,62,154\\n5,B,8,119\\n6,C,84,113\\n1,A,51,133\\n2,B,60,164\\n3,C,76,128\\n4,A,2,170\\n5,B,22,118\\n6,C,72,105\\n1,A,142,22\\n2,B,66,81\\n3,C,59,132\\n4,A,74,8\\n5,B,18,145\\n6,C,28,103\\n1,A,28,75\\n2,B,99,18\\n3,C,5,176\\n4,A,1,55\\n5,B,54,14\\n6,C,121,97\\n1,A,102,108\\n2,B,19,145\\n3,C,51,173\\n4,A,70,87\\n4,A,49,48\\n2,A,,10\\n3,B,-5,2\\n4,C,oops,8\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007806999492458999}"
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_1",
+            "name": "write",
+            "arguments": "{\"path\": \"analysis.py\", \"content\": \"import csv, json\\nrows = list(csv.DictReader(open(\\\"sales.csv\\\", newline=\\\"\\\", encoding=\\\"utf-8\\\")))\\nseen, valid, invalid, duplicates = set(), [], 0, 0\\nfor row in rows:\\n    key = tuple(row.items())\\n    if key in seen:\\n        duplicates += 1\\n        continue\\n    seen.add(key)\\n    try:\\n        r, w = float(row[\\\"retail\\\"]), float(row[\\\"warehouse\\\"])\\n        if r < 0 or w < 0: raise ValueError()\\n    except ValueError:\\n        invalid += 1\\n        continue\\n    valid.append((row, r + w))\\nsuppliers, months = {}, {}\\nfor row, total in valid:\\n    s, m = row[\\\"supplier\\\"], row[\\\"month\\\"]\\n    suppliers[s] = suppliers.get(s, 0) + total\\n    months[m] = months.get(m, 0) + total\\nreport = dict(valid_rows=len(valid), duplicate_rows=duplicates, invalid_rows=invalid,\\n              totals_by_supplier=suppliers, monthly_total=months,\\n              top_supplier=max(suppliers, key=suppliers.get))\\njson.dump(report, open(\\\"report.json\\\", \\\"w\\\"))\\nprint(json.dumps(report))\\n\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_1",
+            "name": "write",
+            "arguments": "{\"path\": \"analysis.py\", \"content\": \"import csv, json\\nrows = list(csv.DictReader(open(\\\"sales.csv\\\", newline=\\\"\\\", encoding=\\\"utf-8\\\")))\\nseen, valid, invalid, duplicates = set(), [], 0, 0\\nfor row in rows:\\n    key = tuple(row.items())\\n    if key in seen:\\n        duplicates += 1\\n        continue\\n    seen.add(key)\\n    try:\\n        r, w = float(row[\\\"retail\\\"]), float(row[\\\"warehouse\\\"])\\n        if r < 0 or w < 0: raise ValueError()\\n    except ValueError:\\n        invalid += 1\\n        continue\\n    valid.append((row, r + w))\\nsuppliers, months = {}, {}\\nfor row, total in valid:\\n    s, m = row[\\\"supplier\\\"], row[\\\"month\\\"]\\n    suppliers[s] = suppliers.get(s, 0) + total\\n    months[m] = months.get(m, 0) + total\\nreport = dict(valid_rows=len(valid), duplicate_rows=duplicates, invalid_rows=invalid,\\n              totals_by_supplier=suppliers, monthly_total=months,\\n              top_supplier=max(suppliers, key=suppliers.get))\\njson.dump(report, open(\\\"report.json\\\", \\\"w\\\"))\\nprint(json.dumps(report))\\n\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Analyze sales.csv. Write and execute analysis.py (stdlib only), and create report.json. Deduplicate exact rows before validation. An invalid row has blank, non-numeric, or negative retail/warehouse. Exclude invalid rows from totals. Required JSON keys: valid_rows, duplicate_rows, invalid_rows, totals_by_supplier (object), monthly_total (object keyed by month strings), top_supplier. Total means retail+warehouse. Use tools to inspect the actual data and run your script before giving a short conclusion."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"sales.csv\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"month,supplier,retail,warehouse\\n1,A,116,144\\n2,B,120,116\\n3,C,131,151\\n4,A,49,48\\n5,B,132,122\\n6,C,48,25\\n1,A,115,78\\n2,B,37,24\\n3,C,138,178\\n4,A,11,153\\n5,B,102,116\\n6,C,41,160\\n1,A,4,136\\n2,B,17,16\\n3,C,10,49\\n4,A,62,154\\n5,B,8,119\\n6,C,84,113\\n1,A,51,133\\n2,B,60,164\\n3,C,76,128\\n4,A,2,170\\n5,B,22,118\\n6,C,72,105\\n1,A,142,22\\n2,B,66,81\\n3,C,59,132\\n4,A,74,8\\n5,B,18,145\\n6,C,28,103\\n1,A,28,75\\n2,B,99,18\\n3,C,5,176\\n4,A,1,55\\n5,B,54,14\\n6,C,121,97\\n1,A,102,108\\n2,B,19,145\\n3,C,51,173\\n4,A,70,87\\n4,A,49,48\\n2,A,,10\\n3,B,-5,2\\n4,C,oops,8\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007806999492458999}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_1",
+              "name": "write",
+              "arguments": "{\"path\": \"analysis.py\", \"content\": \"import csv, json\\nrows = list(csv.DictReader(open(\\\"sales.csv\\\", newline=\\\"\\\", encoding=\\\"utf-8\\\")))\\nseen, valid, invalid, duplicates = set(), [], 0, 0\\nfor row in rows:\\n    key = tuple(row.items())\\n    if key in seen:\\n        duplicates += 1\\n        continue\\n    seen.add(key)\\n    try:\\n        r, w = float(row[\\\"retail\\\"]), float(row[\\\"warehouse\\\"])\\n        if r < 0 or w < 0: raise ValueError()\\n    except ValueError:\\n        invalid += 1\\n        continue\\n    valid.append((row, r + w))\\nsuppliers, months = {}, {}\\nfor row, total in valid:\\n    s, m = row[\\\"supplier\\\"], row[\\\"month\\\"]\\n    suppliers[s] = suppliers.get(s, 0) + total\\n    months[m] = months.get(m, 0) + total\\nreport = dict(valid_rows=len(valid), duplicate_rows=duplicates, invalid_rows=invalid,\\n              totals_by_supplier=suppliers, monthly_total=months,\\n              top_supplier=max(suppliers, key=suppliers.get))\\njson.dump(report, open(\\\"report.json\\\", \\\"w\\\"))\\nprint(json.dumps(report))\\n\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_1",
+          "content": "{\"ok\": true, \"path\": \"analysis.py\", \"tool_duration_s\": 0.001298599992878735}"
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_2",
+            "name": "execute",
+            "arguments": "{\"command\": \"python analysis.py\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_2",
+            "name": "execute",
+            "arguments": "{\"command\": \"python analysis.py\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Analyze sales.csv. Write and execute analysis.py (stdlib only), and create report.json. Deduplicate exact rows before validation. An invalid row has blank, non-numeric, or negative retail/warehouse. Exclude invalid rows from totals. Required JSON keys: valid_rows, duplicate_rows, invalid_rows, totals_by_supplier (object), monthly_total (object keyed by month strings), top_supplier. Total means retail+warehouse. Use tools to inspect the actual data and run your script before giving a short conclusion."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"sales.csv\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"month,supplier,retail,warehouse\\n1,A,116,144\\n2,B,120,116\\n3,C,131,151\\n4,A,49,48\\n5,B,132,122\\n6,C,48,25\\n1,A,115,78\\n2,B,37,24\\n3,C,138,178\\n4,A,11,153\\n5,B,102,116\\n6,C,41,160\\n1,A,4,136\\n2,B,17,16\\n3,C,10,49\\n4,A,62,154\\n5,B,8,119\\n6,C,84,113\\n1,A,51,133\\n2,B,60,164\\n3,C,76,128\\n4,A,2,170\\n5,B,22,118\\n6,C,72,105\\n1,A,142,22\\n2,B,66,81\\n3,C,59,132\\n4,A,74,8\\n5,B,18,145\\n6,C,28,103\\n1,A,28,75\\n2,B,99,18\\n3,C,5,176\\n4,A,1,55\\n5,B,54,14\\n6,C,121,97\\n1,A,102,108\\n2,B,19,145\\n3,C,51,173\\n4,A,70,87\\n4,A,49,48\\n2,A,,10\\n3,B,-5,2\\n4,C,oops,8\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007806999492458999}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_1",
+              "name": "write",
+              "arguments": "{\"path\": \"analysis.py\", \"content\": \"import csv, json\\nrows = list(csv.DictReader(open(\\\"sales.csv\\\", newline=\\\"\\\", encoding=\\\"utf-8\\\")))\\nseen, valid, invalid, duplicates = set(), [], 0, 0\\nfor row in rows:\\n    key = tuple(row.items())\\n    if key in seen:\\n        duplicates += 1\\n        continue\\n    seen.add(key)\\n    try:\\n        r, w = float(row[\\\"retail\\\"]), float(row[\\\"warehouse\\\"])\\n        if r < 0 or w < 0: raise ValueError()\\n    except ValueError:\\n        invalid += 1\\n        continue\\n    valid.append((row, r + w))\\nsuppliers, months = {}, {}\\nfor row, total in valid:\\n    s, m = row[\\\"supplier\\\"], row[\\\"month\\\"]\\n    suppliers[s] = suppliers.get(s, 0) + total\\n    months[m] = months.get(m, 0) + total\\nreport = dict(valid_rows=len(valid), duplicate_rows=duplicates, invalid_rows=invalid,\\n              totals_by_supplier=suppliers, monthly_total=months,\\n              top_supplier=max(suppliers, key=suppliers.get))\\njson.dump(report, open(\\\"report.json\\\", \\\"w\\\"))\\nprint(json.dumps(report))\\n\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_1",
+          "content": "{\"ok\": true, \"path\": \"analysis.py\", \"tool_duration_s\": 0.001298599992878735}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_2",
+              "name": "execute",
+              "arguments": "{\"command\": \"python analysis.py\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_2",
+          "content": "{\"ok\": true, \"exit_code\": 0, \"stdout\": \"MOCK execution fixture\", \"stderr\": \"\", \"duration_s\": 0.001, \"synthetic\": true, \"tool_duration_s\": 0.0006799999973736703}"
+        }
+      ],
+      "reply": {
+        "text": "Synthetic agent completed its scripted workflow.",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "Synthetic agent completed its scripted workflow."
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2400.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": [
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_0",
+        "name": "read",
+        "arguments": "{\"path\": \"sales.csv\"}"
+      },
+      "result": {
+        "ok": true,
+        "content": "month,supplier,retail,warehouse\n1,A,116,144\n2,B,120,116\n3,C,131,151\n4,A,49,48\n5,B,132,122\n6,C,48,25\n1,A,115,78\n2,B,37,24\n3,C,138,178\n4,A,11,153\n5,B,102,116\n6,C,41,160\n1,A,4,136\n2,B,17,16\n3,C,10,49\n4,A,62,154\n5,B,8,119\n6,C,84,113\n1,A,51,133\n2,B,60,164\n3,C,76,128\n4,A,2,170\n5,B,22,118\n6,C,72,105\n1,A,142,22\n2,B,66,81\n3,C,59,132\n4,A,74,8\n5,B,18,145\n6,C,28,103\n1,A,28,75\n2,B,99,18\n3,C,5,176\n4,A,1,55\n5,B,54,14\n6,C,121,97\n1,A,102,108\n2,B,19,145\n3,C,51,173\n4,A,70,87\n4,A,49,48\n2,A,,10\n3,B,-5,2\n4,C,oops,8\n",
+        "truncated": false,
+        "tool_duration_s": 0.0007806999492458999
+      }
+    },
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_1",
+        "name": "write",
+        "arguments": "{\"path\": \"analysis.py\", \"content\": \"import csv, json\\nrows = list(csv.DictReader(open(\\\"sales.csv\\\", newline=\\\"\\\", encoding=\\\"utf-8\\\")))\\nseen, valid, invalid, duplicates = set(), [], 0, 0\\nfor row in rows:\\n    key = tuple(row.items())\\n    if key in seen:\\n        duplicates += 1\\n        continue\\n    seen.add(key)\\n    try:\\n        r, w = float(row[\\\"retail\\\"]), float(row[\\\"warehouse\\\"])\\n        if r < 0 or w < 0: raise ValueError()\\n    except ValueError:\\n        invalid += 1\\n        continue\\n    valid.append((row, r + w))\\nsuppliers, months = {}, {}\\nfor row, total in valid:\\n    s, m = row[\\\"supplier\\\"], row[\\\"month\\\"]\\n    suppliers[s] = suppliers.get(s, 0) + total\\n    months[m] = months.get(m, 0) + total\\nreport = dict(valid_rows=len(valid), duplicate_rows=duplicates, invalid_rows=invalid,\\n              totals_by_supplier=suppliers, monthly_total=months,\\n              top_supplier=max(suppliers, key=suppliers.get))\\njson.dump(report, open(\\\"report.json\\\", \\\"w\\\"))\\nprint(json.dumps(report))\\n\"}"
+      },
+      "result": {
+        "ok": true,
+        "path": "analysis.py",
+        "tool_duration_s": 0.001298599992878735
+      }
+    },
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_2",
+        "name": "execute",
+        "arguments": "{\"command\": \"python analysis.py\"}"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": "MOCK execution fixture",
+        "stderr": "",
+        "duration_s": 0.001,
+        "synthetic": true,
+        "tool_duration_s": 0.0006799999973736703
+      }
+    }
+  ]
+}

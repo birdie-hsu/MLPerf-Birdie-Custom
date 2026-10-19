@@ -1,0 +1,101 @@
+{
+  "row": {
+    "target": "luna",
+    "requested_model": "gpt-6-luna",
+    "backend": "responses",
+    "case_id": "prompts/structured_text/events_ics2xml.json#0",
+    "category": "Structured Text",
+    "mode": "llm",
+    "repeat": 0,
+    "phase": "measured",
+    "synthetic": true,
+    "case_sha256": "a598e60b62ee2402ae0834627222b3abab91ef515b8883a107da62092a99ff98",
+    "origin": "MLPerf Client v2.0 exact prompt",
+    "trace": "traces/03867a6b1d50be0a-r0-measured-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "xml_syntax_only",
+      "pass": true
+    },
+    "status": "ok",
+    "e2e_s": 8.109997725114226e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6-luna",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2800.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 256,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "convert all the given ics events into a single XML file, use the following XML structure: <Events> <Event> <EventID>1</EventID> <EventName>Bay Area Soccer Open Training</EventName> <EventTypeID>1</EventTypeID> <Location>PayPal Park, San Jose, CA</Location> <StartDateTime>2026-05-01T16:00:00</StartDateTime> <EndDateTime>2026-05-01T18:00:00</EndDateTime> <Description>Open training session for local Bay Area soccer fans.</Description> </Event> </Events>"
+        },
+        {
+          "role": "user",
+          "content": "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Bay Area Soccer//Event Calendar//EN\nCALSCALE:GREGORIAN\n\nBEGIN:VEVENT\nUID:event-1@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260501T230000Z\nDTEND:20260502T010000Z\nSUMMARY:Bay Area Soccer Open Training\nLOCATION:PayPal Park, San Jose, CA\nDESCRIPTION:Open training session for local Bay Area soccer fans.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-2@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260503T160000Z\nDTEND:20260503T210000Z\nSUMMARY:Youth Soccer Development Camp\nLOCATION:Golden Gate Park Soccer Fields, San Francisco, CA\nDESCRIPTION:Skill-focused development camp for youth players ages 10–14.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-3@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260508T020000Z\nDTEND:20260508T040000Z\nSUMMARY:NorCal Friendly Match\nLOCATION:Stanford Soccer Stadium, Palo Alto, CA\nDESCRIPTION:Friendly match between Bay Area regional teams.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-4@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260511T010000Z\nDTEND:20260511T040000Z\nSUMMARY:Women’s Soccer Community Night\nLOCATION:Laney College Field, Oakland, CA\nDESCRIPTION:Community celebration supporting women’s soccer.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-5@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260512T170000Z\nDTEND:20260512T220000Z\nSUMMARY:Bay Area Soccer Coaches Workshop\nLOCATION:Levi’s Stadium Conference Center, Santa Clara, CA\nDESCRIPTION:Coaching education workshop covering tactics and player development.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-6@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260515T190000Z\nDTEND:20260515T230000Z\nSUMMARY:Fan Appreciation Day\nLOCATION:PayPal Park Plaza, San Jose, CA\nDESCRIPTION:Meet-and-greet with players, merchandise giveaways, and activities.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:event-7@bayareasoccer.org\nDTSTAMP:20260409T234500Z\nDTSTART:20260518T220000Z\nDTEND:20260519T010000Z\nSUMMARY:Local Club Tryouts\nLOCATION:Mission College Soccer Complex, Santa Clara, CA\nDESCRIPTION:Open tryouts for upcoming competitive club season.\nEND:VEVENT\n\nEND:VCALENDAR"
+        }
+      ],
+      "reply": {
+        "text": "<events><event>Synthetic syntax fixture</event></events>",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "<events><event>Synthetic syntax fixture</event></events>"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6-luna",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2800.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": []
+}

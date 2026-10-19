@@ -1,0 +1,454 @@
+{
+  "row": {
+    "target": "luna",
+    "requested_model": "gpt-6-luna",
+    "backend": "responses",
+    "case_id": "autonomous/swe/37",
+    "category": "SWE Agent",
+    "mode": "autonomous",
+    "repeat": 0,
+    "phase": "measured",
+    "synthetic": true,
+    "case_sha256": "68445f44340016bf0379e47661fb683919b18de050a3e383659ada739f5f9fd6",
+    "origin": "ClientBench synthetic task inspired by MLPerf Client scenario",
+    "trace": "traces/c266d91f68fd3f8d-r0-measured-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "hidden_unit_tests",
+      "pass": true,
+      "agent_verified": true,
+      "evaluation": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": "MOCK execution fixture",
+        "stderr": "",
+        "duration_s": 0.001,
+        "synthetic": true
+      }
+    },
+    "docker_image_id": "MOCK/no-container-execution",
+    "status": "ok",
+    "validation_duration_s": 0.0017155000241473317,
+    "e2e_s": 0.0025745999882929027,
+    "llm_request_s": 0.08,
+    "tool_s": 0.0023676000419072807,
+    "overhead_s": null,
+    "turns": 4,
+    "tool_calls": 3,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6-luna",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      },
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2400.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 2048,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Fix bootstrap_mean_ci.py. Preserve function name and argument names. Reject empty data, non-numeric/bool/non-finite values, non-positive or non-integer/bool n_iterations, and ci_level outside (0,1) with ValueError. Use random.Random(seed).choices(x,k=len(x)) once per resample. Return (mean, lower, upper) with percentile bounds at (1-ci_level)/2 and (1+ci_level)/2, linearly interpolating sorted resample means using index p*(n_iterations-1). Handle a single sample and a single iteration. Use tools to read, edit, and execute a verification script before finishing. Also verify seed=37 reproducibility. No external libraries."
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6-luna",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Fix bootstrap_mean_ci.py. Preserve function name and argument names. Reject empty data, non-numeric/bool/non-finite values, non-positive or non-integer/bool n_iterations, and ci_level outside (0,1) with ValueError. Use random.Random(seed).choices(x,k=len(x)) once per resample. Return (mean, lower, upper) with percentile bounds at (1-ci_level)/2 and (1+ci_level)/2, linearly interpolating sorted resample means using index p*(n_iterations-1). Handle a single sample and a single iteration. Use tools to read, edit, and execute a verification script before finishing. Also verify seed=37 reproducibility. No external libraries."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    # BUG: confidence level was confused with an upper quantile.\\n    return sum(x) / len(x), means[0], means[int(ci_level * (len(means) - 1))]\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007699000416323543}"
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_1",
+            "name": "write",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\", \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    if not x or any(not isinstance(v, (int, float)) or isinstance(v, bool)\\n                    or not math.isfinite(v) for v in x):\\n        raise ValueError(\\\"data must contain finite numbers\\\")\\n    if not isinstance(n_iterations, int) or isinstance(n_iterations, bool) or n_iterations < 1:\\n        raise ValueError(\\\"n_iterations must be a positive integer\\\")\\n    if not isinstance(ci_level, (int, float)) or not 0 < ci_level < 1:\\n        raise ValueError(\\\"ci_level must be between zero and one\\\")\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    def percentile(p):\\n        position = p * (len(means) - 1)\\n        lo = int(position)\\n        hi = min(lo + 1, len(means) - 1)\\n        return means[lo] + (position - lo) * (means[hi] - means[lo])\\n    tail = (1 - ci_level) / 2\\n    return sum(x) / len(x), percentile(tail), percentile(1 - tail)\\n\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_1",
+            "name": "write",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\", \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    if not x or any(not isinstance(v, (int, float)) or isinstance(v, bool)\\n                    or not math.isfinite(v) for v in x):\\n        raise ValueError(\\\"data must contain finite numbers\\\")\\n    if not isinstance(n_iterations, int) or isinstance(n_iterations, bool) or n_iterations < 1:\\n        raise ValueError(\\\"n_iterations must be a positive integer\\\")\\n    if not isinstance(ci_level, (int, float)) or not 0 < ci_level < 1:\\n        raise ValueError(\\\"ci_level must be between zero and one\\\")\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    def percentile(p):\\n        position = p * (len(means) - 1)\\n        lo = int(position)\\n        hi = min(lo + 1, len(means) - 1)\\n        return means[lo] + (position - lo) * (means[hi] - means[lo])\\n    tail = (1 - ci_level) / 2\\n    return sum(x) / len(x), percentile(tail), percentile(1 - tail)\\n\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6-luna",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Fix bootstrap_mean_ci.py. Preserve function name and argument names. Reject empty data, non-numeric/bool/non-finite values, non-positive or non-integer/bool n_iterations, and ci_level outside (0,1) with ValueError. Use random.Random(seed).choices(x,k=len(x)) once per resample. Return (mean, lower, upper) with percentile bounds at (1-ci_level)/2 and (1+ci_level)/2, linearly interpolating sorted resample means using index p*(n_iterations-1). Handle a single sample and a single iteration. Use tools to read, edit, and execute a verification script before finishing. Also verify seed=37 reproducibility. No external libraries."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    # BUG: confidence level was confused with an upper quantile.\\n    return sum(x) / len(x), means[0], means[int(ci_level * (len(means) - 1))]\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007699000416323543}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_1",
+              "name": "write",
+              "arguments": "{\"path\": \"bootstrap_mean_ci.py\", \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    if not x or any(not isinstance(v, (int, float)) or isinstance(v, bool)\\n                    or not math.isfinite(v) for v in x):\\n        raise ValueError(\\\"data must contain finite numbers\\\")\\n    if not isinstance(n_iterations, int) or isinstance(n_iterations, bool) or n_iterations < 1:\\n        raise ValueError(\\\"n_iterations must be a positive integer\\\")\\n    if not isinstance(ci_level, (int, float)) or not 0 < ci_level < 1:\\n        raise ValueError(\\\"ci_level must be between zero and one\\\")\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    def percentile(p):\\n        position = p * (len(means) - 1)\\n        lo = int(position)\\n        hi = min(lo + 1, len(means) - 1)\\n        return means[lo] + (position - lo) * (means[hi] - means[lo])\\n    tail = (1 - ci_level) / 2\\n    return sum(x) / len(x), percentile(tail), percentile(1 - tail)\\n\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_1",
+          "content": "{\"ok\": true, \"path\": \"bootstrap_mean_ci.py\", \"tool_duration_s\": 0.0015897999983280897}"
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_2",
+            "name": "execute",
+            "arguments": "{\"command\": \"python bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_2",
+            "name": "execute",
+            "arguments": "{\"command\": \"python bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6-luna",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    },
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Fix bootstrap_mean_ci.py. Preserve function name and argument names. Reject empty data, non-numeric/bool/non-finite values, non-positive or non-integer/bool n_iterations, and ci_level outside (0,1) with ValueError. Use random.Random(seed).choices(x,k=len(x)) once per resample. Return (mean, lower, upper) with percentile bounds at (1-ci_level)/2 and (1+ci_level)/2, linearly interpolating sorted resample means using index p*(n_iterations-1). Handle a single sample and a single iteration. Use tools to read, edit, and execute a verification script before finishing. Also verify seed=37 reproducibility. No external libraries."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_0",
+              "name": "read",
+              "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_0",
+          "content": "{\"ok\": true, \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    # BUG: confidence level was confused with an upper quantile.\\n    return sum(x) / len(x), means[0], means[int(ci_level * (len(means) - 1))]\\n\", \"truncated\": false, \"tool_duration_s\": 0.0007699000416323543}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_1",
+              "name": "write",
+              "arguments": "{\"path\": \"bootstrap_mean_ci.py\", \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    if not x or any(not isinstance(v, (int, float)) or isinstance(v, bool)\\n                    or not math.isfinite(v) for v in x):\\n        raise ValueError(\\\"data must contain finite numbers\\\")\\n    if not isinstance(n_iterations, int) or isinstance(n_iterations, bool) or n_iterations < 1:\\n        raise ValueError(\\\"n_iterations must be a positive integer\\\")\\n    if not isinstance(ci_level, (int, float)) or not 0 < ci_level < 1:\\n        raise ValueError(\\\"ci_level must be between zero and one\\\")\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    def percentile(p):\\n        position = p * (len(means) - 1)\\n        lo = int(position)\\n        hi = min(lo + 1, len(means) - 1)\\n        return means[lo] + (position - lo) * (means[hi] - means[lo])\\n    tail = (1 - ci_level) / 2\\n    return sum(x) / len(x), percentile(tail), percentile(1 - tail)\\n\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_1",
+          "content": "{\"ok\": true, \"path\": \"bootstrap_mean_ci.py\", \"tool_duration_s\": 0.0015897999983280897}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "_items": [
+            {
+              "type": "function_call",
+              "call_id": "mock_2",
+              "name": "execute",
+              "arguments": "{\"command\": \"python bootstrap_mean_ci.py\"}"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mock_2",
+          "content": "{\"ok\": true, \"exit_code\": 0, \"stdout\": \"MOCK execution fixture\", \"stderr\": \"\", \"duration_s\": 0.001, \"synthetic\": true, \"tool_duration_s\": 7.90000194683671e-06}"
+        }
+      ],
+      "reply": {
+        "text": "Synthetic agent completed its scripted workflow.",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "Synthetic agent completed its scripted workflow."
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6-luna",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 2400.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": [
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_0",
+        "name": "read",
+        "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+      },
+      "result": {
+        "ok": true,
+        "content": "import random\nimport math\n\n\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\n    x = list(data)\n    rng = random.Random(seed)\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\n                   for _ in range(n_iterations))\n    # BUG: confidence level was confused with an upper quantile.\n    return sum(x) / len(x), means[0], means[int(ci_level * (len(means) - 1))]\n",
+        "truncated": false,
+        "tool_duration_s": 0.0007699000416323543
+      }
+    },
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_1",
+        "name": "write",
+        "arguments": "{\"path\": \"bootstrap_mean_ci.py\", \"content\": \"import random\\nimport math\\n\\n\\ndef bootstrap_mean_ci(data, n_iterations=500, ci_level=0.95, seed=None):\\n    x = list(data)\\n    if not x or any(not isinstance(v, (int, float)) or isinstance(v, bool)\\n                    or not math.isfinite(v) for v in x):\\n        raise ValueError(\\\"data must contain finite numbers\\\")\\n    if not isinstance(n_iterations, int) or isinstance(n_iterations, bool) or n_iterations < 1:\\n        raise ValueError(\\\"n_iterations must be a positive integer\\\")\\n    if not isinstance(ci_level, (int, float)) or not 0 < ci_level < 1:\\n        raise ValueError(\\\"ci_level must be between zero and one\\\")\\n    rng = random.Random(seed)\\n    means = sorted(sum(rng.choices(x, k=len(x))) / len(x)\\n                   for _ in range(n_iterations))\\n    def percentile(p):\\n        position = p * (len(means) - 1)\\n        lo = int(position)\\n        hi = min(lo + 1, len(means) - 1)\\n        return means[lo] + (position - lo) * (means[hi] - means[lo])\\n    tail = (1 - ci_level) / 2\\n    return sum(x) / len(x), percentile(tail), percentile(1 - tail)\\n\"}"
+      },
+      "result": {
+        "ok": true,
+        "path": "bootstrap_mean_ci.py",
+        "tool_duration_s": 0.0015897999983280897
+      }
+    },
+    {
+      "source": "model",
+      "call": {
+        "id": "mock_2",
+        "name": "execute",
+        "arguments": "{\"command\": \"python bootstrap_mean_ci.py\"}"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": "MOCK execution fixture",
+        "stderr": "",
+        "duration_s": 0.001,
+        "synthetic": true,
+        "tool_duration_s": 7.90000194683671e-06
+      }
+    }
+  ]
+}

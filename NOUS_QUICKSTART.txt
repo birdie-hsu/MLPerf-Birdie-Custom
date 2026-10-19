@@ -1,0 +1,34 @@
+ClientBench v0.2.0 - Nous API key quick start (Windows PowerShell)
+
+Open PowerShell inside your clientbench folder.
+Set your key for this PowerShell session:
+
+  $env:NOUS_API_KEY = "YOUR_NOUS_API_KEY"
+
+List model IDs available from the Nous endpoint (no inference):
+
+  python bench.py models --target nous
+
+Optional: show only matching IDs/names:
+
+  python bench.py models --target nous --filter flash
+
+Copy an exact ID from the list and run a short first benchmark:
+
+  python bench.py run --target nous --cloud-model "MODEL_ID_FROM_LIST" --suite llm --extended --repeats 1 --warmups 0
+
+To switch models, change only the --cloud-model value. Reuse the same key.
+To compare two models in one report:
+
+  python bench.py run --target nous --cloud-model "FIRST_MODEL_ID" --cloud-model "SECOND_MODEL_ID" --suite llm --extended
+
+Reports: runs/<timestamp>/report.html
+Default full run: 3 measured repeats and 1 warmup per case.
+Autonomous agent suite: replace --suite llm with --suite agent; Docker is required.
+Dry-run: add --dry-run to inspect the plan without a key or network requests.
+Offline demo: add --mock to produce synthetic results with no API charges.
+
+Nous API keys use NOUS_API_KEY. OpenAI direct API keys still use OPENAI_API_KEY.
+Do not paste keys into config files or reports.
+Nous is selected explicitly with --target nous; existing local commands work as before.
+Live Nous credentials and paid inference were not used during offline validation.

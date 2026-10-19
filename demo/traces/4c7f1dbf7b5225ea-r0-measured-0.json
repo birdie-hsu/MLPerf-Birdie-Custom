@@ -1,0 +1,102 @@
+{
+  "row": {
+    "target": "sol",
+    "requested_model": "gpt-6.1-sol",
+    "backend": "responses",
+    "case_id": "prompts/content_generation/greedy-prompt_niv.415874.json#0",
+    "category": "Content Generation",
+    "mode": "llm",
+    "repeat": 0,
+    "phase": "measured",
+    "synthetic": true,
+    "case_sha256": "049a68c2aa51f96621358fa68e851a8473606f0a12f47b3fa5df4bba43a94233",
+    "origin": "MLPerf Client v2.0 exact prompt",
+    "trace": "traces/4c7f1dbf7b5225ea-r0-measured-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "unscored",
+      "pass": null,
+      "note": "Use independent blinded human review or external MMLU/IFEval; nonempty is not accuracy."
+    },
+    "status": "ok",
+    "e2e_s": 3.330002073198557e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6.1-sol",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    ],
+    "output_target_native_tokens": 256,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "You are an AI assistant, who knows every language and how to translate one language to another. Given a task, you explain in simple steps what the task is asking, any guidelines that it provides. You solve the task and show how you used the guidelines to solve the task."
+        },
+        {
+          "role": "user",
+          "content": "Q: Given a negotiation between two participants, answer 'Yes' if both participants agree to the deal, otherwise answer 'No'.\nTHEM: give me books and hats  YOU: all th books and 1 hat for you  THEM: ok.\nA:"
+        }
+      ],
+      "reply": {
+        "text": "Synthetic fixture response. This does not measure model quality or speed.",
+        "calls": [],
+        "history_items": [
+          {
+            "role": "assistant",
+            "content": "Synthetic fixture response. This does not measure model quality or speed."
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": 0.005,
+        "first_tool_s": null,
+        "last_text_s": 0.015,
+        "duration_s": 0.02,
+        "text_delta_count": 2,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": 0.005,
+        "ttft_tool_s": null,
+        "last_visible_s": 0.015,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 3650.0,
+        "text_delta_count": 2
+      }
+    }
+  ],
+  "tools": []
+}

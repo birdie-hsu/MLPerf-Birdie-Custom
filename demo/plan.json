@@ -1,0 +1,16 @@
+{
+  "targets": [
+    "sol",
+    "luna",
+    "local/MOCK-4B",
+    "local/MOCK-35B"
+  ],
+  "cases": 23,
+  "repeats": 1,
+  "warmups_per_case": 1,
+  "worst_case_requests": 468,
+  "max_requests_per_target": 1000,
+  "discovery": null,
+  "synthetic": true,
+  "execution": "Sequential models, one server at a time. No automatic retries."
+}

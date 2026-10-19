@@ -1,0 +1,56 @@
+{
+  "repeats": 3,
+  "warmups": 1,
+  "order_seed": 20261006,
+  "request_timeout_s": 180,
+  "task_timeout_s": 600,
+  "max_agent_turns": 12,
+  "max_requests": 1000,
+  "replay_tools": false,
+  "docker_image": "python:3.12-slim",
+  "docker_cpus": "1",
+  "docker_memory": "1g",
+  "targets": [
+    {
+      "name": "sol",
+      "backend": "responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-6.1-sol",
+      "api_key_env": "OPENAI_API_KEY",
+      "reasoning_effort": "low",
+      "max_output_tokens": 8192,
+      "price_per_million": null
+    },
+    {
+      "name": "luna",
+      "backend": "responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-6-luna",
+      "api_key_env": "OPENAI_API_KEY",
+      "reasoning_effort": "low",
+      "max_output_tokens": 8192,
+      "price_per_million": null
+    },
+    {
+      "name": "local",
+      "backend": "llamacpp",
+      "base_url": "http://127.0.0.1:8080/v1",
+      "model": "local-model",
+      "discover_models": true,
+      "llama_roots": [],
+      "search_roots": [],
+      "context_size": 32768,
+      "gpu_layers": 99,
+      "threads": 8,
+      "load_timeout_s": 300,
+      "server_args": [],
+      "model_overrides": {},
+      "api_key_env": null,
+      "temperature": 0,
+      "seed": 20261006,
+      "max_output_tokens": 2048,
+      "extra_body": {"cache_prompt": false},
+      "metadata": {"gpu": "FILL_ME", "driver": "FILL_ME"}
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "row": {
+    "target": "sol",
+    "requested_model": "gpt-6.1-sol",
+    "backend": "responses",
+    "case_id": "autonomous/swe/11",
+    "category": "SWE Agent",
+    "mode": "autonomous",
+    "repeat": 0,
+    "phase": "warmup",
+    "synthetic": true,
+    "case_sha256": "96287911a895a2a4edbbf356a7d8d686d7cff6040b48c0c885c2eacca697a88e",
+    "origin": "ClientBench synthetic task inspired by MLPerf Client scenario",
+    "trace": "traces/c64f838ce4a838b5-r0-warmup-0.json",
+    "replay_tools_enabled": false,
+    "quality": {
+      "type": "unscored",
+      "pass": null
+    },
+    "docker_image_id": "MOCK/no-container-execution",
+    "status": "warmup_completed",
+    "e2e_s": 4.269997589290142e-05,
+    "llm_request_s": 0.02,
+    "tool_s": 0,
+    "overhead_s": null,
+    "turns": 1,
+    "tool_calls": 0,
+    "failed_tool_calls": 0,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "cached_input_tokens": null,
+      "reasoning_tokens": null
+    },
+    "estimated_usd": null,
+    "resolved_model": "MOCK/gpt-6.1-sol",
+    "turn_metrics": [
+      {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    ],
+    "output_target_native_tokens": 2048,
+    "request_output_budget": 8192
+  },
+  "turns": [
+    {
+      "input": [
+        {
+          "role": "system",
+          "content": "Complete the task by using the provided file and Python tools. Paths are relative to the task workspace. Verify artifacts before finishing. No network or external packages are available."
+        },
+        {
+          "role": "user",
+          "content": "Fix bootstrap_mean_ci.py. Preserve function name and argument names. Reject empty data, non-numeric/bool/non-finite values, non-positive or non-integer/bool n_iterations, and ci_level outside (0,1) with ValueError. Use random.Random(seed).choices(x,k=len(x)) once per resample. Return (mean, lower, upper) with percentile bounds at (1-ci_level)/2 and (1+ci_level)/2, linearly interpolating sorted resample means using index p*(n_iterations-1). Handle a single sample and a single iteration. Use tools to read, edit, and execute a verification script before finishing. Also verify seed=11 reproducibility. No external libraries."
+        }
+      ],
+      "reply": {
+        "text": "",
+        "calls": [
+          {
+            "id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "history_items": [
+          {
+            "type": "function_call",
+            "call_id": "mock_0",
+            "name": "read",
+            "arguments": "{\"path\": \"bootstrap_mean_ci.py\"}"
+          }
+        ],
+        "usage": {},
+        "native_timings": {},
+        "resolved_model": "MOCK/gpt-6.1-sol",
+        "response_id": null,
+        "finish": "completed",
+        "first_event_s": 0.001,
+        "first_text_s": null,
+        "first_tool_s": 0.005,
+        "last_text_s": null,
+        "duration_s": 0.02,
+        "text_delta_count": 0,
+        "reasoning_seen": false,
+        "synthetic": true
+      },
+      "metrics": {
+        "first_event_s": 0.001,
+        "ttft_visible_s": null,
+        "ttft_tool_s": 0.005,
+        "last_visible_s": null,
+        "request_duration_s": 0.02,
+        "visible_native_tokens": null,
+        "native_tps_estimate": null,
+        "visible_chars_per_s": 0.0,
+        "text_delta_count": 0
+      }
+    }
+  ],
+  "tools": []
+}
