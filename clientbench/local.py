@@ -163,6 +163,11 @@ def expand_local_targets(template, inv):
     return expanded
 
 
+VENDORS = {"amd": lambda name: "AMD" in name and "RADEON" in name,
+           "nvidia": lambda name: "NVIDIA" in name,
+           "intel": lambda name: "INTEL" in name}
+
+
 def select_device(server, requested):
     """Resolve a device against this binary; never guess a Vulkan index."""
     try:
@@ -177,13 +182,14 @@ def select_device(server, requested):
     devices = [{"id": match[1], "name": match[2].strip()}
                for line in output.splitlines()
                if (match := re.match(r"^\s*([\w.-]+\d+):\s*(.+)$", line))]
+    vendor = VENDORS.get(requested.lower())
     matches = [d for d in devices if
-               ("AMD" in d["name"].upper() and "RADEON" in d["name"].upper()
-                if requested.lower() == "amd" else d["id"].lower() == requested.lower())]
+               (vendor(d["name"].upper()) if vendor else d["id"].lower() == requested.lower())]
     available = "; ".join(f"{d['id']}: {d['name']}" for d in devices) or "none"
     if len(matches) != 1:
         raise ValueError(f"--local-device {requested}: expected one matching device, found {len(matches)}. "
-                         f"Available devices: {available}. Use an exact device ID when multiple AMD GPUs exist.")
+                         f"Available devices: {available}. Use an exact device ID (e.g. CUDA0, Vulkan1, SYCL0) "
+                         "when several GPUs match.")
     return {**matches[0], "enumeration": output}
 
 

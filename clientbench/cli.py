@@ -11,6 +11,7 @@ from .local import discover_installations, expand_local_targets, inventory, appl
 from .nous import default_target, expand_targets as expand_nous_targets, fetch_models
 from .report import write_report
 from .runner import Runner
+from .tools import DockerPython, HostPython
 from .workloads import ROOT, load_cases
 
 
@@ -140,7 +141,8 @@ def main(argv=None):
     run.add_argument("--llama-root", action="append")
     run.add_argument("--search-root", action="append")
     run.add_argument("--model-filter", help="Optional substring filter, e.g. 35B")
-    run.add_argument("--local-device", help="Exact llama.cpp device ID, or amd to select the sole AMD Radeon GPU")
+    run.add_argument("--local-device", help="Exact llama.cpp device ID (see --list-devices), or amd/nvidia/intel "
+                                            "to select the sole GPU of that vendor")
     run.add_argument("--context-size", type=positive, help="Override local context size for all models")
     run.add_argument("--gpu-layers", type=nonnegative, help="Override local GPU layers; 0 for CPU weights")
     run.add_argument("--local-thinking", choices=["off", "on", "auto"],
@@ -149,6 +151,8 @@ def main(argv=None):
     run.add_argument("--repeats", type=positive)
     run.add_argument("--warmups", type=int)
     run.add_argument("--replay-tools", action="store_true")
+    run.add_argument("--replay-python", help="Host Python for --replay-tools (default: this interpreter); "
+                                             "like official --python-path")
     run.add_argument("--mock", action="store_true", help="Synthetic offline validation; no APIs or models")
     run.add_argument("--dry-run", action="store_true", help="Inventory and execution plan only")
     run.add_argument("--out", help="New output directory")
@@ -202,6 +206,8 @@ def main(argv=None):
             config["warmups"] = args.warmups
         if args.replay_tools:
             config["replay_tools"] = True
+        if args.replay_python:
+            config["replay_python"] = args.replay_python
         targets, discovery = resolve_targets(config, args)
         apply_local_options(targets, args.local_device, args.context_size, args.gpu_layers, args.mock)
         if args.local_thinking:
@@ -234,6 +240,12 @@ def main(argv=None):
         if args.dry_run:
             print(json.dumps(plan, ensure_ascii=False, indent=2))
             return
+        if not args.mock:
+            # Fail fast before loading any model instead of recording 100% tool errors.
+            if any(c["mode"] == "autonomous" for c in cases):
+                DockerPython(config).preflight()
+            if config["replay_tools"] and any(c["mode"] == "replay" for c in cases):
+                HostPython(config).preflight()
         folder = args.out or str(ROOT / "runs" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S-%fZ"))
         run_dir = Path(folder)
         if run_dir.exists() and any(run_dir.iterdir()):

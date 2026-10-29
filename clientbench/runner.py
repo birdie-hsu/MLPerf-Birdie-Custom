@@ -13,7 +13,7 @@ import time
 from . import __version__
 from .local import LocalServer
 from .mock import MockAdapter, MockDocker
-from .tools import DockerPython, ToolEngine, extract_reference_calls
+from .tools import DockerPython, HostPython, ToolEngine, extract_reference_calls
 from .transport import HTTPAdapter, assistant_message
 from .workloads import UPSTREAM, check_llm, evaluate_agent, setup_workspace
 
@@ -108,10 +108,14 @@ class Runner:
                 messages = []
             else:
                 messages = setup_workspace(case, root)
-            docker = MockDocker(case) if self.mock else DockerPython(self.config)
-            needs_tools = case["mode"] == "autonomous" or (case["mode"] == "replay" and self.config["replay_tools"])
-            if needs_tools:
+            # Like official MLPerf Client, fixed reference tools run on the host;
+            # model-authored code (autonomous) stays isolated in Docker.
+            runtime = HostPython if case["mode"] == "replay" else DockerPython
+            docker = MockDocker(case) if self.mock else runtime(self.config)
+            if case["mode"] == "autonomous":
                 row["docker_image_id"] = docker.preflight()
+            elif case["mode"] == "replay" and self.config["replay_tools"]:
+                row["tool_runtime"] = docker.preflight()
             engine = ToolEngine(root, docker)
             adapter = MockAdapter(target, case) if self.mock else HTTPAdapter(target, self.config["request_timeout_s"])
             # Setup, container preflight, and model loading are excluded from task E2E.

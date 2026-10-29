@@ -8,18 +8,76 @@ ClientBench v0.3.0 更新至 MLPerf Client **2.0.1** base。與先前 2.0.0 bund
 
 ## 開始使用
 
-### AMD Vulkan：直接使用 bench.py
+### 模擬官方 MLPerf Client：LLM 與 Agent 指令對照
 
-`--local-device amd` 列舉指定 llama-server 的裝置，只有唯一 AMD Radeon 裝置時才選用；找不到或有多張 AMD GPU 時會停止，請以 `--local-device Vulkan0` 等實際 ID 指定。它會固定單一裝置、關閉自動 fit 調整並保存裝置列舉結果；實際 GPU offload 仍需核對 `servers/` log。`amd` 不區分內顯與獨顯。
+官方 MLPerf Client v2.0.1 的 Agent（SWE、Data Analyst）是**固定對話重播**：每一步把官方參考對話送進模型，再執行參考回覆裡寫好的工具呼叫（`src/CIL/llm/txt2txt_executor.cpp` 的 `RunTools(expected_output_prompt)`），模型自己的輸出不會決定下一步。工具直接在本機以 `cmd.exe`／`popen` 執行，Python 用隨附 portable Python 或 `--python-path`，**不使用 Docker**（`src/CIL/llm/llm_tools.cpp`）。
+
+ClientBench 對應如下。除了標示「需要 Docker」的那一列，都不需要 Docker：
+
+| 官方 MLPerf Client | ClientBench 指令 | 說明 |
+|---|---|---|
+| LLM 基礎工作負載 | `--suite llm` | 13 案例 |
+| LLM 含 8K 摘要 | `--suite llm --extended` | 加入 Summarization Substantial（8K），15 案例 |
+| SWE Agent | `--suite replay --replay-tools` | 3 個推論步驟，執行官方固定工具 |
+| SWE + Data Analyst Agent | `--suite replay --extended --replay-tools` | 加入 Data Analyst 4 步驟 |
+| （ClientBench 額外）LLM + 官方 Agent + 自主 agent | `--suite all --extended --replay-tools` | **需要 Docker**，因為包含自主 agent，見下方說明 |
+| `--python-path <dir>` | `--replay-python <python 路徑>` | 預設使用執行 `bench.py` 的 Python |
+
+官方的 `-q base|ext|both` 由 config 中各 scenario 的 prompt 集合決定；ClientBench 的 `--extended` 是本工具自己的分組（加入 8K 摘要與 Data Analyst），不保證與官方 `ext` 集合一一對應。要涵蓋全部隨附官方 prompts，請使用 `--extended`。
 
 ```powershell
-python bench.py run --target local --llama-root "C:\Users\hsubi\Downloads\llama-b11490-bin-win-vulkan-x64" --local-device amd --context-size 16384 --gpu-layers 99 --suite llm --extended
+# llama.cpp 安裝根目錄（內含 llama-server 與 models 子目錄）；換成自己的路徑
+$LLAMA = "<LLAMA_CPP_ROOT>"
+
+# 1) 官方 LLM suite（extended）
+python bench.py run --target local --llama-root $LLAMA --suite llm --extended
+
+# 2) 官方 Agent suite（SWE + Data Analyst，固定重播 + 執行官方工具）
+python bench.py run --target local --llama-root $LLAMA --suite replay --extended --replay-tools
+
+# 先檢查計畫，或縮短第一輪
+python bench.py run --target local --llama-root $LLAMA --suite replay --extended --replay-tools --dry-run
+python bench.py run --target local --llama-root $LLAMA --suite replay --extended --replay-tools --repeats 1 --warmups 0
 ```
+
+> **`--suite agent` 不是官方 Agent suite。** 它是 ClientBench 自己加的自主 agent 測試：模型自己決定工具呼叫，`execute` 會執行**模型產生的程式碼**，因此必須在 Docker 隔離環境中跑（先 `docker pull python:3.12-slim`）。沒有 Docker 時會在載入模型前就以 `docker_not_found` 停止。`--suite all` 也包含這些自主案例；只要模擬官方，請分開執行上面的 `llm` 與 `replay`。
+
+與官方仍有差異：ClientBench 透過各模型自己的 chat template／API 傳送同一份文字，不重現官方 C++ token 拼接、特定硬體 backend、expected-duration 換算或官方評分公式。工具只允許 `python …` 命令（官方 `execute` 可跑任意 shell），`patch` 也是單次文字替換，而不是 `git apply`；官方參考呼叫只用到 `read` 和 `python …`，所以不影響重播。結果請標示 **MLPerf Client inspired**。
+
+### 指定 GPU：AMD／NVIDIA／Intel
+
+`--local-device` 會先用 `llama-server --list-devices` 列舉裝置，只有**恰好一個**符合時才選用；找不到或有多個符合時會停止並列出可用裝置，請改用實際 ID（例如 `CUDA0`、`Vulkan1`、`SYCL0`）。它會固定單一裝置、關閉自動 fit 調整並保存裝置列舉結果；實際 GPU offload 仍需核對 `servers/` log。不會猜測 Vulkan 索引。
+
+| 值 | 選擇規則 |
+|---|---|
+| `amd` | 名稱含 AMD 與 Radeon；不區分內顯與獨顯 |
+| `nvidia` | 名稱含 NVIDIA |
+| `intel` | 名稱含 Intel；Arc 獨顯與內顯都算，同機有兩者時請用實際 ID |
+| 實際 ID | 例如 `CUDA0`、`Vulkan0`、`SYCL0`，比對 `--list-devices` 的 ID |
+
+要用哪種 llama.cpp 預編譯套件取決於 GPU：NVIDIA 用 CUDA 版（也可用 Vulkan 版）；AMD 用 Vulkan 版（或 HIP 版）；Intel 用 SYCL 版或 Vulkan 版。先確認該套件看得到裝置：
+
+```powershell
+& "<LLAMA_CPP_ROOT>\llama-server.exe" --list-devices
+```
+
+```powershell
+# AMD（Vulkan 或 HIP 版套件）
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device amd --context-size 16384 --gpu-layers 99 --suite llm --extended
+
+# NVIDIA（CUDA 版套件；同機有多張卡時改用 --local-device CUDA0）
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device nvidia --context-size 16384 --gpu-layers 99 --suite llm --extended
+
+# Intel（SYCL 或 Vulkan 版套件；內顯與 Arc 並存時改用 --local-device SYCL0 或 Vulkan0）
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device intel --context-size 16384 --gpu-layers 99 --suite llm --extended
+```
+
+Linux／macOS 把 `llama-server.exe` 換成 `llama-server`，路徑改用 `/path/to/llama.cpp`。官方 Agent 重播用同樣的 `--local-device` 等旗標加上 `--suite replay --extended --replay-tools`。
 
 加 `--dry-run` 可先檢查 15 個案例及裝置設定；加 `--repeats 1 --warmups 0` 可縮短第一輪測試。GGUF 須放在該安裝根目錄的 `models` 子目錄。`--context-size` 與 `--gpu-layers` 優先於逐模型設定。使用 `--local-device` 時，請移除 `server_args` 中重複的 device、split-mode、fit 與 GPU layers 旗標。外部已啟動 server 無法用這些旗標重新設定裝置或 context。
 
 
-解壓後在本資料夾開啟終端機。需要 Python 3.12 以上，以及已編譯的 llama.cpp／llama-server。自主 agent 和含工具的重播需要 Docker，先準備 `python:3.12-slim` 映像；工具不會自動安裝、下載模型或拉取映像。
+解壓後在本資料夾開啟終端機。需要 Python 3.12 以上，以及已編譯的 llama.cpp／llama-server。LLM 與官方 Agent 重播（含 `--replay-tools`）只需要本機 Python；只有 ClientBench 自主 agent（`--suite agent`）需要 Docker 與 `python:3.12-slim` 映像。工具不會自動安裝、下載模型或拉取映像。
 
 ```powershell
 python bench.py discover
@@ -32,11 +90,11 @@ python bench.py run --target local --suite llm
 若 llama.cpp 放在較深、特殊或無法自動存取的位置，可以指定安裝根目錄；之後也能把它存到設定檔的 `llama_roots`。
 
 ```powershell
-python bench.py discover --llama-root "D:\AI\llama.cpp"
-python bench.py run --target local --llama-root "D:\AI\llama.cpp" --suite llm --extended
+python bench.py discover --llama-root "<LLAMA_CPP_ROOT>"
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --suite llm --extended
 ```
 
-`--llama-root` 可重複指定多個安裝目錄。`--search-root "D:\AI"` 則從該目錄探索子目錄。`--model-filter 35B` 可選擇檔名含該字串的模型；未指定時會測試全部模型，**不會用檔名猜測參數量並排除其他模型**。
+`--llama-root` 可重複指定多個安裝目錄。`--search-root "<PARENT_DIR>"` 則從該目錄探索子目錄。`--model-filter 35B` 可選擇檔名含該字串的模型；未指定時會測試全部模型，**不會用檔名猜測參數量並排除其他模型**。
 
 雲端比較需要自己的 OpenAI API key，放在 `OPENAI_API_KEY` 環境變數。設定檔只保存環境變數名稱，不保存 key。`gpt-6.0 luna` 對應的官方 API 名稱是 `gpt-6-luna`。[Luna 官方文件](https://developers.openai.com/api/docs/models/gpt-6-luna)、[Sol 官方文件](https://developers.openai.com/api/docs/models/gpt-6.1-sol)。
 
@@ -74,7 +132,7 @@ Nous target 採 OpenAI-compatible Chat Completions，base URL 為 `https://infer
 
 Nous 的生成上限預設 8192 tokens，包含 reasoning，避免把本機 128–512 token 上限直接套在 thinking 雲端模型。若仍達到上限，可調整 Nous target 的 `max_output_tokens`。回覆 model ID 和 provider（若服務回報）保存在 `resolved_model`／`resolved_provider`；router 的服務排隊、轉送與上游推論都包含在測量時間內。路由提供者可能隨 Nous 配置改變，結果代表該次部署路徑。
 
-自主 agent 用 `--suite agent`，仍要求 Docker。catalog 明確不支援 tools 的模型會在執行前拒絕；省略能力資料的模型標示 unknown，不能當成已驗證支援。模型需支援一致的工具 schema；工具呼叫與 reasoning history 都保存在 trace。
+自主 agent 用 `--suite agent`，需要 Docker（官方式 Agent 重播 `--suite replay --replay-tools` 不需要）。catalog 明確不支援 tools 的模型會在執行前拒絕；省略能力資料的模型標示 unknown，不能當成已驗證支援。模型需支援一致的工具 schema；工具呼叫與 reasoning history 都保存在 trace。
 
 Nous 是 **opt-in** target，只有 `--target nous` 或手動啟用設定才執行。舊設定檔會在載入時加入預設 Nous 模板；不需要覆蓋既有 GPU、GGUF 或 OpenAI 設定。可在 `config.example.json` 的 Nous target 填入固定 `model`，或以 `--cloud-model` 當次覆寫。Plus 推論消耗 Nous credits；價格預設未知，不把它當作免費或自行猜測費率。`max_requests` 仍是每個模型的請求數限制。API key 遭拒時，模型清單指令回報 HTTP status；請核對 key 權限及帳戶可用模型。正式 Nous key 與推論尚需在帳戶環境實測。
 
@@ -139,7 +197,7 @@ SWE 有三個推論步驟，Data Analyst 有四個。`--suite replay` 只執行 
 python bench.py run --suite replay --extended --replay-tools
 ```
 
-`--replay-tools` 在每次推論後執行官方參考回覆中的固定工具。隨附上游 Python 工具及完整 CSV 資料，無須另外下載。工具輸出會保存供查核，後續 prompt 仍使用原始固定對話。這是跨 provider 的可攜重播，未重現官方 C++ token 拼接、特定硬體 backend 或 expected-duration 換算，不應拿其數字直接取代官方成績。
+`--replay-tools` 在每次推論後執行官方參考回覆中的固定工具。隨附上游 Python 工具及完整 CSV 資料，無須另外下載。與官方相同，這些固定工具直接用本機 Python 執行，不需要 Docker；cwd 是該次的 `workspaces/` 目錄，只允許 `python …` 命令。預設用執行 `bench.py` 的 Python，可用 `--replay-python` 指定（對應官方 `--python-path`）；實際 interpreter 版本與路徑記錄在結果的 `tool_runtime`。找不到時會在載入模型前停止。工具輸出會保存供查核，後續 prompt 仍使用原始固定對話。這是跨 provider 的可攜重播，未重現官方 C++ token 拼接、特定硬體 backend 或 expected-duration 換算，不應拿其數字直接取代官方成績。
 
 ### 自主 agent
 
@@ -156,7 +214,7 @@ python bench.py run --suite agent
 
 三個後端共用 `read`、`write`、`patch`、`execute` schema。可恢復的工具錯誤會回給模型；超出回合或時間限制則失敗。`patch` 是單次精確文字替換，`execute` 只接受 Python 命令，沒有通用 shell。此設計限制了工具範圍，不能解讀為完整 SWE-bench 或一般網頁／桌面 agent 測試。
 
-Python 執行用相同 Docker image ID、CPU、memory 和程序數限制，關閉網路、唯讀 container root，只掛載該次任務的 workspace。container 啟動與工具執行時間都算進 tool time；評分端自己的測試時間另列，不算進 agent E2E。若 Docker 或映像不可用，會記錄錯誤，不改在 host 執行模型產生的程式。
+Python 執行用相同 Docker image ID、CPU、memory 和程序數限制，關閉網路、唯讀 container root，只掛載該次任務的 workspace。container 啟動與工具執行時間都算進 tool time；評分端自己的測試時間另列，不算進 agent E2E。若 Docker 或映像不可用，會在載入任何模型前以 `docker_not_found`／`docker_image_not_available` 停止，不改在 host 執行模型產生的程式。
 
 ## 計時與公平比較
 

@@ -1,4 +1,4 @@
-"""Uniform file tools plus Docker-only execution of model-authored Python."""
+"""Uniform file tools; model-authored Python runs in Docker, fixed replay Python on the host."""
 from __future__ import annotations
 
 import json
@@ -8,6 +8,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import uuid
@@ -51,6 +52,64 @@ def bounded_path(root, name, must_exist=False):
     return resolved
 
 
+NO_WINDOW = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+
+
+def python_tokens(command):
+    tokens = shlex.split(command, posix=True)
+    if not tokens or tokens[0] not in {"python", "python3"}:
+        raise ValueError("only_python_commands_are_supported")
+    # Reject shell operators even though shell=False already prevents them.
+    if any(t in {";", "&&", "||", "|", ">", "<"} for t in tokens):
+        raise ValueError("shell_syntax_not_supported")
+    return tokens
+
+
+def run_captured(args, timeout, on_timeout=None, **kwargs):
+    start = time.perf_counter()
+    with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
+        try:
+            exit_code = subprocess.run(args, stdout=stdout, stderr=stderr, timeout=timeout,
+                                       creationflags=NO_WINDOW, **kwargs).returncode
+        except subprocess.TimeoutExpired:
+            if on_timeout:
+                on_timeout()
+            exit_code = -1
+        stdout.seek(0)
+        stderr.seek(0)
+        return {"ok": exit_code == 0, "exit_code": exit_code,
+                "stdout": stdout.read(32000).decode("utf-8", errors="replace"),
+                "stderr": stderr.read(8000).decode("utf-8", errors="replace"),
+                "duration_s": time.perf_counter() - start}
+
+
+class HostPython:
+    """Official MLPerf Client runs `execute` directly on the host with its own Python.
+    Used only for fixed reference tool calls in replay, never for model-authored code."""
+
+    def __init__(self, config):
+        self.python = config.get("replay_python") or sys.executable
+        self.identity = None
+
+    def preflight(self):
+        found = shutil.which(self.python)
+        if not found:
+            raise RuntimeError("replay_python_not_found: " + self.python)
+        check = subprocess.run([found, "-c", "import sys;print(sys.version.split()[0])"],
+                               capture_output=True, text=True, timeout=20, creationflags=NO_WINDOW)
+        if check.returncode != 0:
+            raise RuntimeError("replay_python_not_runnable: " + found)
+        self.python, self.identity = found, f"host-python:{check.stdout.strip()}:{found}"
+        return self.identity
+
+    def execute(self, root, command, timeout=30, tests=None):
+        if not self.identity:
+            self.preflight()
+        tokens = python_tokens(command)
+        env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}
+        return run_captured([self.python, *tokens[1:]], timeout, cwd=Path(root).resolve(), env=env)
+
+
 class DockerPython:
     def __init__(self, config):
         self.config = config
@@ -58,12 +117,14 @@ class DockerPython:
 
     def preflight(self):
         if not shutil.which("docker"):
-            raise RuntimeError("docker_not_found")
+            raise RuntimeError("docker_not_found; install/start Docker Desktop and make sure `docker` is on PATH "
+                               "(the autonomous agent suite runs model-authored code inside a container)")
         check = subprocess.run(["docker", "image", "inspect", self.config["docker_image"],
                                 "--format", "{{.Id}}"], capture_output=True, text=True, timeout=20,
-                                creationflags=(subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0))
+                                creationflags=NO_WINDOW)
         if check.returncode != 0:
-            raise RuntimeError("docker_image_not_available; pull the configured image before running agents")
+            raise RuntimeError("docker_image_not_available; is the Docker engine running? then run: docker pull "
+                               + self.config["docker_image"])
         self.image_id = check.stdout.strip()
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", self.image_id):
             raise RuntimeError("docker_image_identity_unavailable")
@@ -72,12 +133,7 @@ class DockerPython:
     def execute(self, root, command, timeout=30, tests=None):
         if not self.image_id:
             self.preflight()
-        tokens = shlex.split(command, posix=True)
-        if not tokens or tokens[0] not in {"python", "python3"}:
-            raise ValueError("only_python_commands_are_supported")
-        # Reject shell operators even though shell=False already prevents them.
-        if any(t in {";", "&&", "||", "|", ">", "<"} for t in tokens):
-            raise ValueError("shell_syntax_not_supported")
+        tokens = python_tokens(command)
         name = "clientbench-" + uuid.uuid4().hex
         args = ["docker", "run", "--rm", "--name", name, "--pull=never", "--network=none",
                 "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges",
@@ -89,22 +145,8 @@ class DockerPython:
         if tests:
             args.extend(["--mount", f"type=bind,source={Path(tests).resolve()},target=/eval,readonly"])
         args.extend([self.image_id, "python", *tokens[1:]])
-        start = time.perf_counter()
-        with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
-            try:
-                process = subprocess.run(args, stdout=stdout, stderr=stderr, timeout=timeout,
-                                         creationflags=(subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0))
-                exit_code = process.returncode
-            except subprocess.TimeoutExpired:
-                subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=15,
-                               creationflags=(subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0))
-                exit_code = -1
-            stdout.seek(0)
-            stderr.seek(0)
-            return {"ok": exit_code == 0, "exit_code": exit_code,
-                    "stdout": stdout.read(32000).decode("utf-8", errors="replace"),
-                    "stderr": stderr.read(8000).decode("utf-8", errors="replace"),
-                    "duration_s": time.perf_counter() - start}
+        return run_captured(args, timeout, lambda: subprocess.run(
+            ["docker", "rm", "-f", name], capture_output=True, timeout=15, creationflags=NO_WINDOW))
 
 
 class ToolEngine:

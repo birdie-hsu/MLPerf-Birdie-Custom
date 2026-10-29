@@ -4,9 +4,9 @@
   "synthetic": true,
   "official_mlperf_result": false,
   "host": {
-    "os": "Windows-11-10.0.26200-SP0",
+    "os": "MOCK-OS",
     "python": "3.12.14",
-    "processor": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD"
+    "processor": "MOCK-CPU"
   },
   "config": {
     "repeats": 1,
