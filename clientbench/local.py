@@ -13,6 +13,8 @@ import subprocess
 import time
 import urllib.request
 
+from .context import resolve_context, validate_context_args
+
 SERVER_NAMES = ("llama-server.exe", "llama-server")
 SKIP_DIRS = {".git", "node_modules", "__pycache__", "windows", "program files",
              "program files (x86)", "$recycle.bin", "system volume information",
@@ -236,11 +238,13 @@ class LocalServer:
         self.props = {}
 
     def __enter__(self):
+        validate_context_args(self.target.get("server_args", []))
         info = self.target["installation"]
         if info["missing_parts"]:
             raise RuntimeError("missing_gguf_shards")
         self.run_dir.mkdir(parents=True, exist_ok=True)
-        identifier = hashlib.sha256(self.target["name"].encode()).hexdigest()[:12]
+        context_size = resolve_context(self.target, {})[0]
+        identifier = hashlib.sha256((self.target["name"] + f"/ctx-{context_size}").encode()).hexdigest()[:12]
         self.target["metadata"]["gguf_part_sha256"] = {
             Path(p).name: sha256(p) for p in info["parts"]}
         self.target["metadata"]["server_sha256"] = sha256(info["server"])
@@ -249,7 +253,7 @@ class LocalServer:
             port = sock.getsockname()[1]
         args = [info["server"], "-m", info["model_path"], "--alias", self.target["model"],
                 "--host", "127.0.0.1", "--port", str(port), "--jinja", "--no-context-shift", "-np", "1",
-                "-c", str(self.target.get("context_size", 32768)),
+                "-c", str(context_size),
                 "-ngl", str(self.target.get("gpu_layers", 99)),
                 "-t", str(self.target.get("threads", min(os.cpu_count() or 4, 8)))]
         extra = self.target.get("server_args", [])

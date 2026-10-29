@@ -39,7 +39,7 @@
       "discover_models": true,
       "llama_roots": [],
       "search_roots": [],
-      "context_size": 32768,
+      "context_size": null,
       "gpu_layers": 99,
       "threads": 8,
       "load_timeout_s": 300,

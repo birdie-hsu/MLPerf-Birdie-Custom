@@ -10,6 +10,8 @@ import random
 import shutil
 import xml.etree.ElementTree as ET
 
+from .context import DEFAULT_CONTEXT_LENGTH, workload_context_length
+
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM = ROOT / "data" / "mlperf_v2"
 
@@ -27,6 +29,7 @@ def load_cases(suite="all", extended=False):
             if path.name == "template.json":
                 continue
             obj = json.loads(path.read_text(encoding="utf-8-sig"))
+            context_length = workload_context_length(obj.get("model_config", {}))
             agent = path.parent.name in {"swe_agent", "data_agent"}
             if (suite == "llm" and agent) or (suite == "replay" and not agent):
                 continue
@@ -43,6 +46,7 @@ def load_cases(suite="all", extended=False):
                     reference = (path.parent / prompts[i + 1]["agent"]).read_text(encoding="utf-8")
                     steps.append({"messages": messages, "reference": reference})
                 case = {"id": relative, "category": obj["category"], "mode": "replay",
+                        "context_length": context_length,
                         "steps": steps, "output_target": obj["model_config"]["search"]["max_length"],
                         "warmup_messages": [{"role": "system", "content":
                             (path.parent / prompts[0]["system"]).read_text(encoding="utf-8")}],
@@ -55,6 +59,7 @@ def load_cases(suite="all", extended=False):
                     messages = [{"role": k, "content": prompt[k]} for k in ("system", "user") if k in prompt]
                     cases.append({"id": relative + f"#{i}", "category": obj["category"],
                                   "mode": "llm", "messages": messages,
+                                  "context_length": context_length,
                                   "output_target": obj["model_config"]["search"]["max_length"],
                                   "origin": upstream_label + " exact prompt"})
     if suite in {"all", "agent"}:
@@ -63,6 +68,7 @@ def load_cases(suite="all", extended=False):
                 cases.append({"id": f"autonomous/{kind}/{seed}", "category":
                               "SWE Agent" if kind == "swe" else "Data Analyst Agent",
                               "mode": "autonomous", "kind": kind, "seed": seed,
+                              "context_length": DEFAULT_CONTEXT_LENGTH,
                               "output_target": 2048,
                               "origin": "ClientBench synthetic task inspired by MLPerf Client scenario"})
     for case in cases:

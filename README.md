@@ -63,18 +63,18 @@ python bench.py run --target local --llama-root $LLAMA --suite replay --extended
 
 ```powershell
 # AMD（Vulkan 或 HIP 版套件）
-python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device amd --context-size 16384 --gpu-layers 99 --suite llm --extended
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device amd --gpu-layers 99 --suite llm --extended
 
 # NVIDIA（CUDA 版套件；同機有多張卡時改用 --local-device CUDA0）
-python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device nvidia --context-size 16384 --gpu-layers 99 --suite llm --extended
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device nvidia --gpu-layers 99 --suite llm --extended
 
 # Intel（SYCL 或 Vulkan 版套件；內顯與 Arc 並存時改用 --local-device SYCL0 或 Vulkan0）
-python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device intel --context-size 16384 --gpu-layers 99 --suite llm --extended
+python bench.py run --target local --llama-root "<LLAMA_CPP_ROOT>" --local-device intel --gpu-layers 99 --suite llm --extended
 ```
 
 Linux／macOS 把 `llama-server.exe` 換成 `llama-server`，路徑改用 `/path/to/llama.cpp`。官方 Agent 重播用同樣的 `--local-device` 等旗標加上 `--suite replay --extended --replay-tools`。
 
-加 `--dry-run` 可先檢查 15 個案例及裝置設定；加 `--repeats 1 --warmups 0` 可縮短第一輪測試。GGUF 須放在該安裝根目錄的 `models` 子目錄。`--context-size` 與 `--gpu-layers` 優先於逐模型設定。使用 `--local-device` 時，請移除 `server_args` 中重複的 device、split-mode、fit 與 GPU layers 旗標。外部已啟動 server 無法用這些旗標重新設定裝置或 context。
+加 `--dry-run` 可先檢查 15 個案例、裝置及逐案例 context 設定；加 `--repeats 1 --warmups 0` 可縮短第一輪測試。GGUF 須放在該安裝根目錄的 `models` 子目錄。預設讀取各官方 prompt 的 `model_config.context_length`；`--context-size` 可明確指定所有案例共用的容量，優先於逐模型設定，但這會偏離官方逐工作負載的容量配置。`--gpu-layers` 也優先於逐模型設定。使用 `--local-device` 時，請移除 `server_args` 中重複的 device、split-mode、fit 與 GPU layers 旗標。外部已啟動 server 無法用這些旗標重新設定裝置或 context，執行計畫與結果會標為 `external_server`，實際容量留空。
 
 
 解壓後在本資料夾開啟終端機。需要 Python 3.12 以上，以及已編譯的 llama.cpp／llama-server。LLM 與官方 Agent 重播（含 `--replay-tools`）只需要本機 Python；只有 ClientBench 自主 agent（`--suite agent`）需要 Docker 與 `python:3.12-slim` 映像。工具不會自動安裝、下載模型或拉取映像。
@@ -240,7 +240,7 @@ Generation TPS 與可見 Native TPS 分欄顯示，不能解讀為只有最終�
 
 Sol 與 Luna 都使用 Responses API，預設 `reasoning_effort:low`；llama.cpp 使用串流 Chat Completions，預設 temperature 0。[OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling)、[llama.cpp server 文件](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md)。Responses 的 `max_output_tokens` 包含隱藏推理，預設給 8192；本機 LLM 使用上游輸出目標當上限。**相同 visible 長度未被強制保證**，請同時查看實際輸出量、截斷狀態和品質，不能只拿較短回答的 E2E 判定模型較快。需做嚴格固定輸出長度 microbenchmark 時，應另建工作負載與共同 tokenization 規則。
 
-雲端請求時間包含網路、服務排隊與推論；本機包含 HTTP 與推論，不能把差值直接當硬體效能差。cloud cached-input tokens 有回報就記錄；不能保證關閉雲端 cache。本機預設 `cache_prompt:false`，server 不做 context shift；warmup 與 model load 不計入正式測量。主結果是已載入模型的 sequential、concurrency 1 測試。多模型批次順序和案例順序由 seed 隨機化，所有同一模型案例完成才換下一個，以減少重複載入成本；仍可能有時段與溫度偏差，正式實驗應重複整批並調換順序。
+雲端請求時間包含網路、服務排隊與推論；本機包含 HTTP 與推論，不能把差值直接當硬體效能差。cloud cached-input tokens 有回報就記錄；不能保證關閉雲端 cache。本機預設 `cache_prompt:false`，server 不做 context shift；warmup 與 model load 不計入正式測量。主結果是已載入模型的 sequential、concurrency 1 測試。多模型批次順序和案例順序由 seed 隨機化，同一模型內依 context 容量分組，所有容量組完成才換下一個模型，以減少重複載入成本；仍可能有時段與溫度偏差，正式實驗應重複整批並調換順序。
 
 報告按 target／scenario／lane 分組，输出 p50、p95、完成次數、失敗數、品質檢查通過率、成功案例延遲與各 case median 的 bootstrap mean interval。warmup 不参与統計，失败不会从成功率分母移除。少量案例的 p95 和 interval 只能探索，不是穩定排名。
 
@@ -263,25 +263,39 @@ python bench.py run --target local --suite llm --extended --local-thinking on
 
 ## 4B 至 35B 的硬體設定
 
-預設一次一個模型、context 32768、GPU layers 99、8 threads。這些是可調整的初始設定，不保證 35B 一定能放入你的 RAM／VRAM。記憶體不足會記錄載入失敗，不暗中降低 context 或更換量化。
+預設一次一個模型，context 跟隨官方 v2.0.1 各工作負載的設定，GPU layers 99、8 threads。這些是可調整的初始設定，不保證 35B 一定能放入你的 RAM／VRAM。記憶體不足會記錄該容量的載入失敗，仍會繼續其他容量，不暗中降低 context 或更換量化。
 
-例如在 `config.example.json` 的 local target 加入以下內容，key 使用 `models` 內的相對檔案路徑：
+`context_size` 預設為 `null`（或省略），表示讀取原始 prompt 的 `model_config.context_length`。同官方程式，也接受舊式 `model_config.model.context_length`，兩者同時存在時以外層為準；未指定則使用 4096。
+
+| 工作負載 | Context tokens |
+|---|---:|
+| 一般內容生成、創意寫作、結構轉換、intermediate4k | 4096 |
+| 程式碼分析 | 5120 |
+| substantial8k 長文本 | 8192 |
+| SWE Agent 固定重播 | 12000 |
+| Data Analyst Agent 固定重播 | 15000 |
+
+本機 server 的 context 在啟動時決定，因此每個模型依容量分組，完成一組後關閉 server，再啟動下一個容量。容量組順序及組內案例順序由 seed 隨機化；同一組共用一次模型載入，所有重複測試完成後再換組。模型載入不計入推論與任務時間；warmup 仍逐案例執行。自主 agent 是客製任務，沒有對應的官方 prompt 設定，使用官方程式的 4096 預設值，可明確覆寫。
+
+設定優先順序：`--context-size` → `model_overrides` 的數字 `context_size` → local target 的數字 `context_size` → 工作負載設定。若沿用舊的 `config.local.json`，請將其中固定的 32768（以及逐模型覆寫）改為 `null` 或刪除，並移除啟動指令的 `--context-size`，才會採用官方容量。
+
+`plan.json` 會列出各案例的容量與來源；`results.jsonl`／`results.csv`／trace 保留 `workload_context_length`、`context_size` 與 `context_source`。`run.json` 的 `server_sessions` 記錄各容量的啟動參數、載入時間及 log。雲端模型的 context 由服務端決定，這些本機容量設定不會改變雲端模型。
+
+例如在 `config.example.json` 的 local target 加入以下內容，key 使用 `models` 內的相對檔案路徑。省略 context 覆寫即可繼續跟隨官方工作負載：
 
 ```json
 "model_overrides": {
   "small/model-4B-Q4_K_M.gguf": {
-    "context_size": 16384,
     "gpu_layers": 99
   },
   "large/model-35B-Q4_K_M.gguf": {
-    "context_size": 16384,
     "gpu_layers": 20,
     "load_timeout_s": 600
   }
 }
 ```
 
-比較參數量時，盡量讓量化、context、GPU offload 與工具環境一致；若不同，應將它們視為不同部署配置。`gpu_layers:0` 可明確測 CPU 模式。`server_args` 可指定 batch、KV cache type 等額外參數，但不得覆寫模型路徑、host、port 或憑證。不同 server 版本的 flag 支援程度不同，失敗可從 log 查明。
+比較參數量時，盡量讓量化、context、GPU offload 與工具環境一致；若不同，應將它們視為不同部署配置。`gpu_layers:0` 可明確測 CPU 模式。`server_args` 可指定 batch、KV cache type 等額外參數，但不得覆寫模型路徑、host、port、憑證、context 或 parallelism；要覆寫 context，請使用 `context_size` 或 `--context-size`。不同 server 版本的 flag 支援程度不同，失敗可從 log 查明。
 
 ## 設定與輸出
 

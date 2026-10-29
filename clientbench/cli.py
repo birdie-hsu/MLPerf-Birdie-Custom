@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 import urllib.parse
 
+from .context import local_context_plan, validate_context_size
+
 from .local import discover_installations, expand_local_targets, inventory, apply_local_options
 from .nous import default_target, expand_targets as expand_nous_targets, fetch_models
 from .report import write_report
@@ -65,6 +67,8 @@ def config_load(path):
         if target["backend"] not in {"responses", "llamacpp", "chatcompletions"}:
             raise ValueError("unsupported backend")
         if target["backend"] == "llamacpp":
+            if target.get("context_size") is not None:
+                validate_context_size(target["context_size"])
             target.setdefault("local_thinking", "off")
             if target["local_thinking"] not in {"off", "on", "auto"}:
                 raise ValueError("local_thinking must be off, on, or auto")
@@ -143,7 +147,8 @@ def main(argv=None):
     run.add_argument("--model-filter", help="Optional substring filter, e.g. 35B")
     run.add_argument("--local-device", help="Exact llama.cpp device ID (see --list-devices), or amd/nvidia/intel "
                                             "to select the sole GPU of that vendor")
-    run.add_argument("--context-size", type=positive, help="Override local context size for all models")
+    run.add_argument("--context-size", type=positive,
+                     help="Override all local workload contexts; default follows official context_length")
     run.add_argument("--gpu-layers", type=nonnegative, help="Override local GPU layers; 0 for CPU weights")
     run.add_argument("--local-thinking", choices=["off", "on", "auto"],
                      help="Local baseline defaults to off; on/auto use max_output_tokens including reasoning")
@@ -232,11 +237,12 @@ def main(argv=None):
                 "worst_case_requests": estimate, "max_requests_per_target": config["max_requests"],
                 "discovery": discovery, "synthetic": args.mock,
                 "local_hardware": [{"target": t["name"], "context_size": t.get("context_size"),
+                                    **local_context_plan(t, cases, args.mock),
                                     "gpu_layers": t.get("gpu_layers"), "server_args": t.get("server_args", []),
                                     "selected_device": t.get("metadata", {}).get("selected_device"),
                                     "gpu": t.get("metadata", {}).get("gpu")}
                                    for t in targets if t["backend"] == "llamacpp"],
-                "execution": "Sequential models, one server at a time. No automatic retries."}
+                "execution": "Sequential models, grouped by context capacity; one server at a time. No automatic retries."}
         if args.dry_run:
             print(json.dumps(plan, ensure_ascii=False, indent=2))
             return

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import nullcontext
+from copy import deepcopy
 from dataclasses import asdict
 from datetime import datetime, timezone
 import hashlib
@@ -11,6 +12,7 @@ import random
 import time
 
 from . import __version__
+from .context import DEFAULT_CONTEXT_LENGTH, resolve_context
 from .local import LocalServer
 from .mock import MockAdapter, MockDocker
 from .tools import DockerPython, HostPython, ToolEngine, extract_reference_calls
@@ -91,11 +93,16 @@ class Runner:
                "backend": target["backend"], "case_id": case["id"],
                "category": case["category"], "mode": case["mode"], "repeat": repeat,
                "phase": phase, "synthetic": self.mock, "case_sha256": case["sha256"],
+               "workload_context_length": case.get("context_length", DEFAULT_CONTEXT_LENGTH),
                "origin": case["origin"], "trace": trace_path.relative_to(self.run_dir).as_posix(),
                "replay_tools_enabled": bool(self.config["replay_tools"] and case["mode"] == "replay"),
                "quality": {"type": "unscored", "pass": None}}
         if target["backend"] == "llamacpp":
             row["local_thinking"] = target.get("local_thinking", "off")
+            size, source = resolve_context(target, case)
+            managed = bool(target.get("installation") or self.mock)
+            row["context_size"] = size if managed else None
+            row["context_source"] = target.get("context_source", source) if managed else "external_server"
         if target.get("provider"):
             row["provider"] = target["provider"]
         replies, turns, tool_trace = [], [], []
@@ -232,48 +239,87 @@ class Runner:
                              "processor": platform.processor()},
                     "config": self.config, "targets": targets,
                     "upstream": manifest, "cases": [{k: c[k] for k in
-                        ("id", "sha256", "category", "mode", "origin")} for c in cases],
+                        ("id", "sha256", "category", "mode", "origin", "context_length") if k in c} for c in cases],
                     "cache_policy": "Local cache_prompt false by default; cloud cache observed through usage, not disabled.",
-                    "execution_order": []}
+                    "execution_order": [], "server_sessions": []}
         metadata["harness_sha256"] = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
                                       for path in sorted(Path(__file__).parent.glob("*.py"))}
         (self.run_dir / "run.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
         rng = random.Random(self.config["order_seed"])
         order = list(targets)
         rng.shuffle(order)
-        # Models are intentionally batched: a 35B GGUF is loaded once per run,
-        # then unloaded before the next. Randomized case order within each repeat.
+        # Batch by model and context: llama-server fixes n_ctx at startup.
+        # Each capacity gets its own server, unloaded before the next starts.
         for target in order:
             self.target_requests = 0
             warmed = set()
-            manager = (LocalServer(target, self.run_dir) if target.get("installation") and not self.mock
-                       else nullcontext())
+            groups = {}
+            managed = target["backend"] == "llamacpp" and (target.get("installation") or self.mock)
+            for case in cases:
+                size = resolve_context(target, case)[0] if managed else None
+                groups.setdefault(size, []).append(case)
+            batches = list(groups.items())
+            rng.shuffle(batches)
             try:
-                with manager:
-                    for repeat in range(self.config["repeats"]):
-                        shuffled = list(cases)
-                        rng.shuffle(shuffled)
-                        for case in shuffled:
-                            metadata["execution_order"].append([target["name"], case["id"], repeat])
-                            if case["id"] not in warmed:
-                                for w in range(self.config["warmups"]):
-                                    self.run_case(target, case, repeat, "warmup", w)
-                                warmed.add(case["id"])
-                            self.run_case(target, case, repeat)
-                            if self.target_requests >= self.config["max_requests"]:
-                                raise BudgetExceeded("request_budget_exhausted")
+                for size, batch in batches:
+                    active = deepcopy(target)
+                    if managed:
+                        active["context_size"] = size
+                        active["context_source"] = resolve_context(target, batch[0])[1]
+                    manager = (LocalServer(active, self.run_dir) if active.get("installation") and not self.mock
+                               else nullcontext())
+                    session = None
+                    if managed:
+                        session = {"target": active["name"], "context_size": size,
+                                   "context_source": active["context_source"],
+                                   "case_ids": [c["id"] for c in batch],
+                                   "synthetic": self.mock, "metadata": active.setdefault("metadata", {})}
+                        metadata["server_sessions"].append(session)
+                    first_row = len(self.rows)
+                    try:
+                        with manager:
+                            for repeat in range(self.config["repeats"]):
+                                shuffled = list(batch)
+                                rng.shuffle(shuffled)
+                                for case in shuffled:
+                                    metadata["execution_order"].append([active["name"], case["id"], repeat])
+                                    if case["id"] not in warmed:
+                                        for w in range(self.config["warmups"]):
+                                            self.run_case(active, case, repeat, "warmup", w)
+                                        warmed.add(case["id"])
+                                    self.run_case(active, case, repeat)
+                                    if self.target_requests >= self.config["max_requests"]:
+                                        raise BudgetExceeded("request_budget_exhausted")
+                        if session is not None:
+                            session["status"] = "completed"
+                    except BudgetExceeded:
+                        if session is not None:
+                            session["status"] = "budget_exhausted"
+                        raise
+                    except Exception as error:
+                        if session is not None:
+                            session["status"] = "load_error"
+                        # Only this capacity failed; retain other groups' results.
+                        recorded = {(r["case_id"], r["repeat"]) for r in self.rows[first_row:]
+                                    if r["phase"] == "measured"}
+                        for repeat in range(self.config["repeats"]):
+                            for case in batch:
+                                if (case["id"], repeat) in recorded:
+                                    continue
+                                self.save_row({"target": active["name"], "requested_model": active["model"],
+                                    "backend": active["backend"],
+                                    "case_id": case["id"], "category": case["category"], "mode": case["mode"],
+                                    "repeat": repeat, "phase": "measured", "synthetic": self.mock,
+                                    "workload_context_length": case.get("context_length", DEFAULT_CONTEXT_LENGTH),
+                                    "context_size": size, "context_source": active.get("context_source"),
+                                    "status": "load_error", "error_code": str(error)[:250],
+                                    "quality": {"type": "not_executed", "pass": False if case["mode"] == "autonomous" else None},
+                                    "e2e_s": None, "turn_metrics": [], "usage": {}, "estimated_usd": None})
+                    finally:
+                        (self.run_dir / "run.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
             except BudgetExceeded:
                 metadata["stopped_reason"] = "A target reached its per-target request budget; report is partial"
                 metadata.setdefault("budget_exhausted_targets", []).append(target["name"])
-            except Exception as error:
-                for repeat in range(self.config["repeats"]):
-                    for case in cases:
-                        self.save_row({"target": target["name"], "requested_model": target["model"],
-                            "case_id": case["id"], "category": case["category"], "mode": case["mode"],
-                            "repeat": repeat, "phase": "measured", "synthetic": self.mock,
-                            "status": "load_error", "error_code": str(error)[:250],
-                            "quality": {"type": "not_executed", "pass": False if case["mode"] == "autonomous" else None},
-                            "e2e_s": None, "turn_metrics": [], "usage": {}, "estimated_usd": None})
             (self.run_dir / "run.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
         metadata["request_count"] = self.requests
         metadata["completed_rows"] = len(self.rows)

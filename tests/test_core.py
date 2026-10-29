@@ -187,6 +187,7 @@ class DiscoveryTests(unittest.TestCase):
                     self.assertEqual(len(target["metadata"]["gguf_part_sha256"]), 1)
                     args = popen.call_args.args[0]
                     self.assertIn("--no-context-shift", args)
+                    self.assertEqual(args[args.index("-c") + 1], "4096")
                     self.assertIn(str(model), args)
                 fake_process.terminate.assert_called_once()
 
